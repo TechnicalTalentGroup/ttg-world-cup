@@ -408,10 +408,17 @@ const KO_ROUNDS=[
 const PTS={fb:2,ig:2,li:2,google:3,glassdoor:3,indeed:3};
 
 
-// ── LIVE API — TheSportsDB (CORS-friendly, no key needed) ───────────────────
-const TSDB_BASE    = 'https://www.thesportsdb.com/api/v1/json/3';
-const WC_LEAGUE_ID = '4960';
-const WC_SEASON    = '2025-2026';
+// ── LIVE API — football-data.org via CORS proxy ──────────────────────────────
+const FD_TOKEN  = '9f34e64387d54a429730ee22e487b945';
+const FD_BASE   = 'https://api.football-data.org/v4';
+const PROXY     = 'https://corsproxy.io/?url=';
+
+function fdFetch(url){
+  // Route through CORS proxy so GitHub Pages can reach football-data.org
+  return fetch(PROXY + encodeURIComponent(url), {
+    headers: {'X-Auth-Token': FD_TOKEN}
+  });
+}
 
 const TEAM_NAME_MAP = {
   'Mexico':'Mexico','South Korea':'South Korea','Korea Republic':'South Korea',
@@ -437,83 +444,56 @@ const TEAM_NAME_MAP = {
 };
 function mapTeam(n){ return TEAM_NAME_MAP[n]||(n||''); }
 
-const ROUND_MAP = {
-  'Round of 32':'r32','Round Of 32':'r32','1/16 Finals':'r32',
-  'Round of 16':'r16','Round Of 16':'r16','1/8 Finals':'r16',
-  'Quarter-Finals':'qf','Quarterfinals':'qf','Quarter Finals':'qf',
-  'Semi-Finals':'sf','Semifinals':'sf','Semi Finals':'sf',
-  'Final':'fin','Finals':'fin',
-};
+function parseGroupLetter(str){
+  if(!str) return null;
+  const m = str.match(/[A-L]/);
+  return m ? m[0] : null;
+}
 
 let apiLastSync = null;
 
 async function fetchLiveResults(){
   try {
     showSyncStatus('syncing');
-    const resp = await fetch(
-      `${TSDB_BASE}/eventsseason.php?id=${WC_LEAGUE_ID}&s=${encodeURIComponent(WC_SEASON)}`
-    );
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    const events = data.events || [];
-
-    const newKO = {r32:[],r16:[],qf:[],sf:[],fin:[],champ:[]};
-    const groupPoints = {};
-    const groupPlayed = {};
-
-    for(const ev of events){
-      const finished = ev.strStatus==='Match Finished' || ev.intHomeScore!==null;
-      const home  = mapTeam(ev.strHomeTeam);
-      const away  = mapTeam(ev.strAwayTeam);
-      const round = ev.strRound||'';
-      const hScore = parseInt(ev.intHomeScore);
-      const aScore = parseInt(ev.intAwayScore);
-
-      const grpMatch = round.match(/Group ([A-L])/i);
-      if(grpMatch){
-        const letter = grpMatch[1].toUpperCase();
-        if(!groupPoints[letter]) groupPoints[letter]={};
-        if(!groupPlayed[letter]) groupPlayed[letter]={};
-        [home,away].forEach(t=>{
-          if(!groupPoints[letter][t]) groupPoints[letter][t]=0;
-          if(!groupPlayed[letter][t]) groupPlayed[letter][t]=0;
-        });
-        if(finished&&!isNaN(hScore)&&!isNaN(aScore)){
-          groupPlayed[letter][home]++;
-          groupPlayed[letter][away]++;
-          if(hScore>aScore){groupPoints[letter][home]+=3;}
-          else if(aScore>hScore){groupPoints[letter][away]+=3;}
-          else{groupPoints[letter][home]+=1;groupPoints[letter][away]+=1;}
-        }
-        continue;
-      }
-
-      const roundKey = ROUND_MAP[round];
-      if(roundKey&&finished&&!isNaN(hScore)&&!isNaN(aScore)){
-        let winner=null;
-        if(hScore>aScore) winner=home;
-        else if(aScore>hScore) winner=away;
-        else{
-          const hPen=parseInt(ev.intHomeScorePenalty);
-          const aPen=parseInt(ev.intAwayScorePenalty);
-          if(!isNaN(hPen)&&!isNaN(aPen)) winner=hPen>aPen?home:away;
-        }
-        if(winner&&!newKO[roundKey].includes(winner)) newKO[roundKey].push(winner);
-        if(roundKey==='fin'&&winner&&!newKO.champ.includes(winner)) newKO.champ.push(winner);
-      }
-    }
-
-    for(const[letter,pts] of Object.entries(groupPoints)){
-      const played=groupPlayed[letter]||{};
-      const sorted=Object.entries(pts).sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1));
+    // GROUP STANDINGS
+    const stResp = await fdFetch(`${FD_BASE}/competitions/WC/standings?season=2026`);
+    if(!stResp.ok) throw new Error(`Standings HTTP ${stResp.status}`);
+    const stData = await stResp.json();
+    for(const group of (stData.standings||[])){
+      const letter = parseGroupLetter(group.group||group.stage||'');
+      if(!letter) continue;
+      const table = (group.table||[]).sort((a,b)=>a.position-b.position);
       if(!state.groupResults[letter]) state.groupResults[letter]={};
-      const allThreePlayed=sorted.every(([t])=>(played[t]||0)>=3);
-      if(sorted[0]&&(played[sorted[0][0]]||0)>0) state.groupResults[letter].first  = sorted[0][0];
-      if(sorted[1]&&(played[sorted[1][0]]||0)>0) state.groupResults[letter].second = sorted[1][0];
-      if(sorted[2]&&(played[sorted[2][0]]||0)>0) state.groupResults[letter].third  = sorted[2][0];
-      if(allThreePlayed&&sorted[3])               state.groupResults[letter].last   = sorted[3][0];
+      if(table[0]&&table[0].playedGames>0) state.groupResults[letter].first  = mapTeam(table[0].team.name);
+      if(table[1]&&table[1].playedGames>0) state.groupResults[letter].second = mapTeam(table[1].team.name);
+      if(table[2]&&table[2].playedGames>0) state.groupResults[letter].third  = mapTeam(table[2].team.name);
+      if(table.every(r=>r.playedGames>=3)&&table[3]) state.groupResults[letter].last = mapTeam(table[3].team.name);
     }
 
+    // KNOCKOUT RESULTS
+    const matchResp = await fdFetch(`${FD_BASE}/competitions/WC/matches?season=2026`);
+    if(!matchResp.ok) throw new Error(`Matches HTTP ${matchResp.status}`);
+    const matchData = await matchResp.json();
+    const stageMap = {'LAST_32':'r32','ROUND_OF_16':'r16','QUARTER_FINALS':'qf','SEMI_FINALS':'sf','FINAL':'fin'};
+    const newKO = {r32:[],r16:[],qf:[],sf:[],fin:[],champ:[]};
+    for(const m of (matchData.matches||[])){
+      if(m.status!=='FINISHED') continue;
+      const roundKey = stageMap[m.stage];
+      if(!roundKey) continue;
+      const ft = m.score?.fullTime;
+      let winner = null;
+      if(ft&&ft.home!==null&&ft.away!==null){
+        if(ft.home>ft.away)      winner = mapTeam(m.homeTeam.name);
+        else if(ft.away>ft.home) winner = mapTeam(m.awayTeam.name);
+        else {
+          const pen = m.score?.penalties;
+          if(pen&&pen.home!==null)
+            winner = pen.home>pen.away ? mapTeam(m.homeTeam.name) : mapTeam(m.awayTeam.name);
+        }
+      }
+      if(winner&&!newKO[roundKey].includes(winner)) newKO[roundKey].push(winner);
+      if(roundKey==='fin'&&winner&&!newKO.champ.includes(winner)) newKO.champ.push(winner);
+    }
     for(const[k,v] of Object.entries(newKO)) if(v.length>0) state.koResults[k]=v;
 
     apiLastSync = new Date();
