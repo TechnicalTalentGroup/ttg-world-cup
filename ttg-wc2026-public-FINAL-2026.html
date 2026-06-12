@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TTG World Cup 2026 — Contest Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#F5C518;--navy:#0B1929;--navy2:#0f2138;--card:#152032;--electric:#00C2FF;--border:#1e3048;--text:#dde8f0;--muted:#5a7a96;--green:#2ec4b6;--red:#e63946;--panel:#0d1a28;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--navy);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;
+  background-image:radial-gradient(ellipse at 10% 0%,rgba(0,194,255,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 100%,rgba(245,197,24,0.06) 0%,transparent 50%);}
+header{background:#080f1a;border-bottom:2px solid var(--electric);padding:0 1.5rem;height:64px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 32px rgba(0,194,255,0.12);position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:.75rem;}
+.brand-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--electric),#0077aa);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:3px;color:#fff;}
+.brand-sub{font-family:'Barlow Condensed',sans-serif;font-size:.65rem;letter-spacing:3px;color:var(--electric);text-transform:uppercase;}
+.nav{display:flex;gap:.15rem;}
+.nav-btn{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:.4rem .9rem;border:1.5px solid transparent;background:transparent;color:var(--muted);border-radius:5px;cursor:pointer;transition:all .2s;}
+.nav-btn:hover{color:var(--text);border-color:var(--border);}
+.nav-btn.active{color:var(--electric);border-color:var(--electric);background:rgba(0,194,255,.08);}
+.page{display:none;padding:1.5rem;max-width:1160px;margin:0 auto;animation:fadeUp .25s ease;}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pg-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;color:var(--electric);margin-bottom:.2rem;}
+.pg-sub{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;}
+.sec-label{font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.divider{height:1px;background:var(--border);margin:1.5rem 0;}
+.stats-row{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.25rem;}
+.stat-chip{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:.55rem 1rem;display:flex;align-items:center;gap:.6rem;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--electric);line-height:1;}
+.stat-lbl{font-family:'Barlow Condensed',sans-serif;font-size:.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.search-box{background:var(--card);border:1.5px solid var(--border);border-radius:6px;padding:.55rem 1rem;color:var(--text);font-family:'Barlow',sans-serif;font-size:.9rem;width:260px;}
+.search-box:focus{outline:none;border-color:var(--electric);}
+.tbl-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;overflow-x:auto;margin-bottom:1.5rem;}
+table{width:100%;border-collapse:collapse;min-width:480px;}
+th{background:#0a1828;font-family:'Barlow Condensed',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:.65rem 1rem;text-align:left;border-bottom:1px solid var(--border);}
+td{padding:.65rem 1rem;border-bottom:1px solid rgba(30,48,72,.45);font-size:.88rem;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(0,194,255,.025);}
+.badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:.2rem .55rem;border-radius:4px;}
+.badge-g{background:rgba(0,194,255,.15);color:var(--electric);border:1px solid rgba(0,194,255,.3);}
+.rule-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.rule-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:1.25rem;}
+.rule-card-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gold);margin-bottom:.75rem;}
+.rule-row{display:flex;justify-content:space-between;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(30,48,72,.5);font-size:.88rem;}
+.rule-row:last-child{border-bottom:none;}
+.rule-pts{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--electric);}
+.notice{background:rgba(0,194,255,.07);border:1.5px solid rgba(0,194,255,.2);border-radius:8px;padding:1rem 1.25rem;font-size:.88rem;color:var(--muted);margin-bottom:1.25rem;}
+.highlight td{background:rgba(245,197,24,.06)!important;}
+/* STANDINGS */
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:1rem;margin-bottom:2rem;padding:1.5rem;background:var(--card);border:1.5px solid var(--border);border-radius:12px;}
+.pod-slot{display:flex;flex-direction:column;align-items:center;gap:.3rem;min-width:120px;}
+.pod-medal{font-size:1.8rem;}
+.pod-name{font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:#fff;text-align:center;}
+.pod-team{font-size:.8rem;color:var(--muted);text-align:center;}
+.pod-pts{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--electric);}
+.pod-bar{width:80px;border-radius:4px 4px 0 0;margin-top:.5rem;}
+.pb1{height:80px;background:linear-gradient(to top,var(--gold),rgba(245,197,24,.3));}
+.pb2{height:55px;background:linear-gradient(to top,#aaa,rgba(170,170,170,.3));}
+.pb3{height:40px;background:linear-gradient(to top,#cd7f32,rgba(205,127,50,.3));}
+.lb-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1.5rem;}
+.lb-hd{display:grid;grid-template-columns:50px 1fr 90px 90px 90px 80px;background:#0a1828;padding:.65rem 1rem;font-family:'Barlow Condensed',sans-serif;font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.lb-row{display:grid;grid-template-columns:50px 1fr 90px 90px 90px 80px;padding:.7rem 1rem;border-bottom:1px solid rgba(30,48,72,.45);align-items:center;transition:background .15s;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row:hover{background:rgba(0,194,255,.025);}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--muted);}
+.r1{color:var(--gold)!important;} .r2{color:#aaa!important;} .r3{color:#cd7f32!important;}
+.lb-player-name{font-size:.9rem;font-weight:600;}
+.lb-player-team{font-size:.78rem;color:var(--muted);}
+.lb-pts{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;}
+.lb-sub{text-align:center;font-size:.75rem;color:var(--muted);}
+.tied{color:var(--gold)!important;}
+/* SOCIAL */
+.social-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.social-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:1.25rem;}
+.social-link{display:inline-flex;align-items:center;gap:.5rem;margin-top:.75rem;font-family:'Barlow Condensed',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:.45rem 1rem;border-radius:20px;border:1.5px solid;text-decoration:none;transition:opacity .2s;}
+.social-link:hover{opacity:.8;}
+/* RESULTS — read-only display */
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-bottom:1.5rem;}
+.res-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.res-card-hd{background:#0a1828;padding:.6rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:2px;color:var(--electric);}
+.res-card-bd{padding:.75rem 1rem;}
+.res-row{display:flex;align-items:center;gap:.5rem;padding:.35rem 0;border-bottom:1px solid rgba(30,48,72,.4);font-size:.85rem;}
+.res-row:last-child{border-bottom:none;}
+.res-pos{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);width:30px;}
+.res-team{color:var(--text);}
+.res-empty{color:var(--muted);font-style:italic;}
+.ko-round{margin-bottom:1.25rem;}
+.ko-round-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--gold);margin-bottom:.6rem;}
+.ko-teams-display{display:flex;flex-wrap:wrap;gap:.5rem;}
+.ko-winner-pill{display:inline-flex;align-items:center;gap:.3rem;background:rgba(0,194,255,.12);border:1.5px solid var(--electric);border-radius:6px;padding:.35rem .75rem;font-size:.85rem;}
+.ko-empty{color:var(--muted);font-size:.85rem;font-style:italic;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="brand-icon">⚽</div>
+    <div>
+      <div class="brand-name">TTG · World Cup 2026</div>
+      <div class="brand-sub">Contest Tracker</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="nav('roster')">Roster</button>
+    <button class="nav-btn" onclick="nav('standings')">Standings</button>
+    <button class="nav-btn" onclick="nav('results')">Results</button>
+    <button class="nav-btn" onclick="nav('rules')">Rules</button>
+    <button class="nav-btn" onclick="nav('social')">Follow Us</button>
+  </nav>
+</header>
+
+<!-- ROSTER -->
+<div id="page-roster" class="page active">
+  <div class="pg-title">Team Assignments</div>
+  <div class="pg-sub">Find your name · Tournament June 11 – July 19, 2026</div>
+  <div class="stats-row">
+    <div class="stat-chip"><span class="stat-val">74</span><span class="stat-lbl">Participants</span></div>
+    <div class="stat-chip"><span class="stat-val">48</span><span class="stat-lbl">Nations</span></div>
+    <div class="stat-chip"><span class="stat-val">12</span><span class="stat-lbl">Groups</span></div>
+  </div>
+  <div style="margin-bottom:1rem;">
+    <input class="search-box" id="search" type="text" placeholder="Search by name or team…" oninput="filterRoster()">
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Participant</th><th>Team</th><th>Group</th>
+      </tr></thead>
+      <tbody id="roster-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- STANDINGS -->
+<div id="page-standings" class="page">
+  <div class="pg-title">Standings</div>
+  <div class="pg-sub">Tournament points update live · Social points added periodically by admin</div>
+  <div id="podium-wrap"></div>
+  <div class="lb-wrap">
+    <div class="lb-hd">
+      <div>Rank</div><div>Player</div>
+      <div style="text-align:center">Game Pts</div>
+      <div style="text-align:center">Social Pts</div>
+      <div style="text-align:center">Total</div>
+      <div style="text-align:center">Actions</div>
+    </div>
+    <div id="lb-body"></div>
+  </div>
+</div>
+
+<!-- RESULTS (read-only) -->
+<div id="page-results" class="page">
+  <div class="pg-title">Tournament Results</div>
+  <div class="pg-sub">Auto-synced from live tournament data · <span id="results-sync-time" style="color:var(--green)">Loading…</span></div>
+  <div class="sec-label">Group Stage</div>
+  <div class="results-grid" id="results-grid"></div>
+  <div class="divider"></div>
+  <div class="sec-label">Knockout Stage</div>
+  <div id="ko-display"></div>
+</div>
+
+<!-- RULES -->
+<div id="page-rules" class="page">
+  <div class="pg-title">Rules &amp; Prizes</div>
+  <div class="pg-sub">Point structure · Second chance · Prizes</div>
+  <div class="rule-grid">
+    <div class="rule-card">
+      <div class="rule-card-title">⚽ Group Stage</div>
+      <div class="rule-row"><span>1st in Group (Group Winner)</span><span class="rule-pts">5 pts</span></div>
+      <div class="rule-row"><span>2nd in Group</span><span class="rule-pts">3 pts</span></div>
+      <div class="rule-row"><span>3rd in Group</span><span class="rule-pts">1 pt</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">🏆 Knockout Stage</div>
+      <div class="rule-row"><span>Win Round of 32</span><span class="rule-pts">3 pts</span></div>
+      <div class="rule-row"><span>Win Round of 16</span><span class="rule-pts">5 pts</span></div>
+      <div class="rule-row"><span>Reach Quarterfinal</span><span class="rule-pts">8 pts</span></div>
+      <div class="rule-row"><span>Reach Semifinal</span><span class="rule-pts">12 pts</span></div>
+      <div class="rule-row"><span>Reach Final</span><span class="rule-pts">15 pts</span></div>
+      <div class="rule-row"><span>Win World Cup</span><span class="rule-pts">25 pts</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">📱 Social &amp; Reviews</div>
+      <div class="rule-row"><span>Post on Facebook</span><span class="rule-pts">2 pts</span></div>
+      <div class="rule-row"><span>Post on Instagram</span><span class="rule-pts">2 pts</span></div>
+      <div class="rule-row"><span>Post on LinkedIn</span><span class="rule-pts">2 pts</span></div>
+      <div class="rule-row"><span>Google Review</span><span class="rule-pts">3 pts</span></div>
+      <div class="rule-row"><span>Glassdoor Review</span><span class="rule-pts">3 pts</span></div>
+      <div class="rule-row"><span>Indeed Review</span><span class="rule-pts">3 pts</span></div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-card-title">🎁 Prizes</div>
+      <div class="rule-row"><span>🏅 Group Stage Winner</span><span style="color:var(--gold);font-size:.82rem;font-weight:700;">TTG World Cup Shirt</span></div>
+      <div class="rule-row"><span>🏆 Overall Points Leader</span><span style="color:var(--gold);font-size:.82rem;font-weight:700;">65" TCL TV</span></div>
+      <div style="margin-top:1rem;padding:.75rem;background:rgba(245,197,24,.07);border-radius:6px;font-size:.82rem;color:var(--muted);line-height:1.65;">
+        <strong style="color:var(--gold);">🔄 Second Chance Rule</strong><br>
+        If your team is eliminated AND you completed all 3 social posts (FB + IG + LI) before group stage ends, you get randomly assigned a knockout stage team!
+      </div>
+    </div>
+  </div>
+  <div class="rule-card" style="max-width:580px;">
+    <div class="rule-card-title">⚖️ Tiebreaker</div>
+    <p style="font-size:.88rem;color:var(--muted);line-height:1.7;">When two participants are tied on points, the winner is determined by most total social media actions (posts + reviews). Engage more to stay ahead — even without a better result on the pitch.</p>
+  </div>
+</div>
+
+<!-- SOCIAL -->
+<div id="page-social" class="page">
+  <div class="pg-title">Follow &amp; Earn</div>
+  <div class="pg-sub">Post, follow, and review to earn bonus points toward the TV</div>
+  <div class="notice">Tag us when you post from work to earn your social bonus points. Submit proof to your TTG contact. Posts must tag <strong>@technicaltalentgroupstaffing</strong> (IG) or <strong>Technical Talent Group</strong> on other platforms.</div>
+  <div class="social-grid">
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#1877F2;">📘 Facebook · +2 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Post a photo or shoutout tagging Technical Talent Group on Facebook.</p>
+      <a href="https://www.facebook.com/technicaltalentgroup.az" target="_blank" class="social-link" style="color:#1877F2;border-color:#1877F2;">Follow on Facebook</a>
+    </div>
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#E1306C;">📸 Instagram · +2 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Post or share a story tagging @technicaltalentgroupstaffing.</p>
+      <a href="https://www.instagram.com/technicaltalentgroupstaffing/" target="_blank" class="social-link" style="color:#E1306C;border-color:#E1306C;">Follow on Instagram</a>
+    </div>
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#0A66C2;">💼 LinkedIn · +2 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Post about your work or project and tag Technical Talent Group.</p>
+      <a href="https://www.linkedin.com/company/90758056/" target="_blank" class="social-link" style="color:#0A66C2;border-color:#0A66C2;">Follow on LinkedIn</a>
+    </div>
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#EA4335;">⭐ Google Review · +3 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Leave an honest review for Technical Talent Group on Google.</p>
+      <a href="https://www.google.com/search?q=technical+talent+group" target="_blank" class="social-link" style="color:#EA4335;border-color:#EA4335;">Leave Google Review</a>
+    </div>
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#2ecc40;">🏢 Glassdoor · +3 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Share your experience working with TTG on Glassdoor.</p>
+      <a href="https://www.glassdoor.com/Overview/Working-at-Technical-Talent-Group-EI_IE9188616.11,33.htm" target="_blank" class="social-link" style="color:#2ecc40;border-color:#2ecc40;">Review on Glassdoor</a>
+    </div>
+    <div class="social-card">
+      <div class="rule-card-title" style="color:#0077B5;">💼 Indeed · +3 pts</div>
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.6;">Write a review about your experience with TTG on Indeed.</p>
+      <a href="https://www.indeed.com/cmp/Technical-Talent-Group" target="_blank" class="social-link" style="color:#0077B5;border-color:#0077B5;">Review on Indeed</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const ALL_PLAYERS = [{"id": 2, "name": "Ruben Acedo", "team": "Mexico", "group": "A", "flag": "\ud83c\uddf2\ud83c\uddfd", "display": "Ruben A."}, {"id": 56, "name": "Doug Attarian", "team": "Czechia", "group": "A", "flag": "\ud83c\udde8\ud83c\uddff", "display": "Doug A."}, {"id": 54, "name": "Cyn Avalos", "team": "DR Congo", "group": "K", "flag": "\ud83c\udde8\ud83c\udde9", "display": "Cyn A."}, {"id": 29, "name": "Joseph Bachini", "team": "Uzbekistan", "group": "K", "flag": "\ud83c\uddfa\ud83c\uddff", "display": "Joseph B."}, {"id": 40, "name": "Ed Barrett", "team": "Sweden", "group": "F", "flag": "\ud83c\uddf8\ud83c\uddea", "display": "Ed B."}, {"id": 73, "name": "Artin Barseghian", "team": "Canada", "group": "B", "flag": "\ud83c\udde8\ud83c\udde6", "display": "Artin B."}, {"id": 22, "name": "Karen Bazzle", "team": "Algeria", "group": "J", "flag": "\ud83c\udde9\ud83c\uddff", "display": "Karen B."}, {"id": 66, "name": "Shaun Beckwith", "team": "Panama", "group": "L", "flag": "\ud83c\uddf5\ud83c\udde6", "display": "Shaun B."}, {"id": 72, "name": "Alex Boyd", "team": "Austria", "group": "J", "flag": "\ud83c\udde6\ud83c\uddf9", "display": "Alex B."}, {"id": 33, "name": "Israel Cerrano", "team": "Qatar", "group": "B", "flag": "\ud83c\uddf6\ud83c\udde6", "display": "Israel C."}, {"id": 52, "name": "Michael Conner", "team": "Uruguay", "group": "H", "flag": "\ud83c\uddfa\ud83c\uddfe", "display": "Michael C."}, {"id": 34, "name": "Gabe Copley", "team": "Senegal", "group": "I", "flag": "\ud83c\uddf8\ud83c\uddf3", "display": "Gabe C."}, {"id": 6, "name": "Stephen Delci", "team": "Germany", "group": "E", "flag": "\ud83c\udde9\ud83c\uddea", "display": "Stephen D."}, {"id": 30, "name": "Carlon Douglas", "team": "South Korea", "group": "A", "flag": "\ud83c\uddf0\ud83c\uddf7", "display": "Carlon D."}, {"id": 24, "name": "Alex Duarte", "team": "Cape Verde", "group": "H", "flag": "\ud83c\udde8\ud83c\uddfb", "display": "Alex D."}, {"id": 43, "name": "Matt Eisenbacher", "team": "Colombia", "group": "K", "flag": "\ud83c\udde8\ud83c\uddf4", "display": "Matt E."}, {"id": 46, "name": "Jonathan Evans", "team": "Spain", "group": "H", "flag": "\ud83c\uddea\ud83c\uddf8", "display": "Jonathan E."}, {"id": 65, "name": "Mike Fleming", "team": "Belgium", "group": "G", "flag": "\ud83c\udde7\ud83c\uddea", "display": "Mike F."}, {"id": 7, "name": "Ryan Freeman", "team": "Canada", "group": "B", "flag": "\ud83c\udde8\ud83c\udde6", "display": "Ryan F."}, {"id": 50, "name": "Jorge Fuentes", "team": "Tunisia", "group": "F", "flag": "\ud83c\uddf9\ud83c\uddf3", "display": "Jorge F."}, {"id": 3, "name": "Oscar Gamboa", "team": "Iran", "group": "G", "flag": "\ud83c\uddee\ud83c\uddf7", "display": "Oscar G."}, {"id": 26, "name": "Jacob Gomez", "team": "Haiti", "group": "C", "flag": "\ud83c\udded\ud83c\uddf9", "display": "Jacob G."}, {"id": 45, "name": "David Grottenthaler", "team": "Croatia", "group": "L", "flag": "\ud83c\udded\ud83c\uddf7", "display": "David G."}, {"id": 4, "name": "Jesus Chavez Gutierrez", "team": "Argentina", "group": "J", "flag": "\ud83c\udde6\ud83c\uddf7", "display": "Jesus G."}, {"id": 36, "name": "Damareon Hawkins", "team": "Ecuador", "group": "E", "flag": "\ud83c\uddea\ud83c\udde8", "display": "Damareon H."}, {"id": 53, "name": "Brandon Heise", "team": "Ecuador", "group": "E", "flag": "\ud83c\uddea\ud83c\udde8", "display": "Brandon H."}, {"id": 32, "name": "Darryl Holcomb", "team": "Netherlands", "group": "F", "flag": "\ud83c\uddf3\ud83c\uddf1", "display": "Darryl H."}, {"id": 58, "name": "Casey Howell", "team": "Iran", "group": "G", "flag": "\ud83c\uddee\ud83c\uddf7", "display": "Casey H."}, {"id": 35, "name": "Jarrod Hudson", "team": "Australia", "group": "D", "flag": "\ud83c\udde6\ud83c\uddfa", "display": "Jarrod H."}, {"id": 11, "name": "Steven Hyatt", "team": "France", "group": "I", "flag": "\ud83c\uddeb\ud83c\uddf7", "display": "Steven H."}, {"id": 67, "name": "Emily Ijoma", "team": "Austria", "group": "J", "flag": "\ud83c\udde6\ud83c\uddf9", "display": "Emily I."}, {"id": 20, "name": "James Inman", "team": "Netherlands", "group": "F", "flag": "\ud83c\uddf3\ud83c\uddf1", "display": "James I."}, {"id": 49, "name": "Garrett Jones", "team": "Mexico", "group": "A", "flag": "\ud83c\uddf2\ud83c\uddfd", "display": "Garrett J."}, {"id": 41, "name": "Lee Knox", "team": "Algeria", "group": "J", "flag": "\ud83c\udde9\ud83c\uddff", "display": "Lee K."}, {"id": 9, "name": "Anthony Lohmann", "team": "South Africa", "group": "A", "flag": "\ud83c\uddff\ud83c\udde6", "display": "Anthony L."}, {"id": 42, "name": "Andre Loyd", "team": "Switzerland", "group": "B", "flag": "\ud83c\udde8\ud83c\udded", "display": "Andre L."}, {"id": 48, "name": "Jesus Dominguez Luna", "team": "New Zealand", "group": "G", "flag": "\ud83c\uddf3\ud83c\uddff", "display": "Jesus L."}, {"id": 70, "name": "Tyler Madia", "team": "Paraguay", "group": "D", "flag": "\ud83c\uddf5\ud83c\uddfe", "display": "Tyler M."}, {"id": 31, "name": "Juan Martinez", "team": "Egypt", "group": "G", "flag": "\ud83c\uddea\ud83c\uddec", "display": "Juan M."}, {"id": 74, "name": "Nicolas Mateo", "team": "Senegal", "group": "I", "flag": "\ud83c\uddf8\ud83c\uddf3", "display": "Nicolas M."}, {"id": 63, "name": "Stephen McWhorter", "team": "Czechia", "group": "A", "flag": "\ud83c\udde8\ud83c\uddff", "display": "Stephen M."}, {"id": 5, "name": "Tyler Montez", "team": "Germany", "group": "E", "flag": "\ud83c\udde9\ud83c\uddea", "display": "Tyler M."}, {"id": 60, "name": "Roderick Moten", "team": "Bosnia & Herz.", "group": "B", "flag": "\ud83c\udde7\ud83c\udde6", "display": "Roderick M."}, {"id": 17, "name": "Elseddig Musa", "team": "Cura\u00e7ao", "group": "E", "flag": "\ud83c\udde8\ud83c\uddfc", "display": "Elseddig M."}, {"id": 12, "name": "Al Muscianese", "team": "Japan", "group": "F", "flag": "\ud83c\uddef\ud83c\uddf5", "display": "Al M."}, {"id": 28, "name": "Brillon Olague", "team": "South Korea", "group": "A", "flag": "\ud83c\uddf0\ud83c\uddf7", "display": "Brillon O."}, {"id": 37, "name": "Josie Ortiz", "team": "Jordan", "group": "J", "flag": "\ud83c\uddef\ud83c\uddf4", "display": "Josie O."}, {"id": 44, "name": "Mike Perez", "team": "Paraguay", "group": "D", "flag": "\ud83c\uddf5\ud83c\uddfe", "display": "Mike P."}, {"id": 8, "name": "Roberto Rascon", "team": "Panama", "group": "L", "flag": "\ud83c\uddf5\ud83c\udde6", "display": "Roberto R."}, {"id": 21, "name": "Ricardo Reyes", "team": "Norway", "group": "I", "flag": "\ud83c\uddf3\ud83c\uddf4", "display": "Ricardo R."}, {"id": 18, "name": "Nathan Rivera", "team": "Cape Verde", "group": "H", "flag": "\ud83c\udde8\ud83c\uddfb", "display": "Nathan R."}, {"id": 16, "name": "Damien Robinson", "team": "Ghana", "group": "L", "flag": "\ud83c\uddec\ud83c\udded", "display": "Damien R."}, {"id": 27, "name": "Anthony Rodriguez", "team": "Bosnia & Herz.", "group": "B", "flag": "\ud83c\udde7\ud83c\udde6", "display": "Anthony R."}, {"id": 68, "name": "Diego Rosas", "team": "Scotland", "group": "C", "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc73\udb40\udc63\udb40\udc74\udb40\udc7f", "display": "Diego R."}, {"id": 15, "name": "Peter Ross", "team": "France", "group": "I", "flag": "\ud83c\uddeb\ud83c\uddf7", "display": "Peter R."}, {"id": 1, "name": "Sulaiman Rucker", "team": "Morocco", "group": "C", "flag": "\ud83c\uddf2\ud83c\udde6", "display": "Sulaiman R."}, {"id": 14, "name": "Phet Saengdara", "team": "Egypt", "group": "G", "flag": "\ud83c\uddea\ud83c\uddec", "display": "Phet S."}, {"id": 47, "name": "Fernando Sanchez", "team": "Sweden", "group": "F", "flag": "\ud83c\uddf8\ud83c\uddea", "display": "Fernando S."}, {"id": 51, "name": "Eddie Sanchez", "team": "Portugal", "group": "K", "flag": "\ud83c\uddf5\ud83c\uddf9", "display": "Eddie S."}, {"id": 59, "name": "Ryan Sangster", "team": "Ivory Coast", "group": "E", "flag": "\ud83c\udde8\ud83c\uddee", "display": "Ryan S."}, {"id": 69, "name": "Anthony Saravia", "team": "Ivory Coast", "group": "E", "flag": "\ud83c\udde8\ud83c\uddee", "display": "Anthony S."}, {"id": 23, "name": "Brennen Sprenger", "team": "Turkey", "group": "D", "flag": "\ud83c\uddf9\ud83c\uddf7", "display": "Brennen S."}, {"id": 10, "name": "Brandon Stalcup", "team": "Colombia", "group": "K", "flag": "\ud83c\udde8\ud83c\uddf4", "display": "Brandon S."}, {"id": 55, "name": "Jacob Stroud", "team": "Qatar", "group": "B", "flag": "\ud83c\uddf6\ud83c\udde6", "display": "Jacob S."}, {"id": 25, "name": "Joseph Tangi", "team": "Argentina", "group": "J", "flag": "\ud83c\udde6\ud83c\uddf7", "display": "Joseph T."}, {"id": 57, "name": "Timothy Tucker", "team": "Brazil", "group": "C", "flag": "\ud83c\udde7\ud83c\uddf7", "display": "Timothy T."}, {"id": 64, "name": "Ariel Villa", "team": "Brazil", "group": "C", "flag": "\ud83c\udde7\ud83c\uddf7", "display": "Ariel V."}, {"id": 61, "name": "Jonathan Wardwell", "team": "Australia", "group": "D", "flag": "\ud83c\udde6\ud83c\uddfa", "display": "Jonathan W."}, {"id": 19, "name": "Tanner Welker", "team": "Spain", "group": "H", "flag": "\ud83c\uddea\ud83c\uddf8", "display": "Tanner W."}, {"id": 62, "name": "Alec Wiens", "team": "DR Congo", "group": "K", "flag": "\ud83c\udde8\ud83c\udde9", "display": "Alec W."}, {"id": 38, "name": "Elijah Wiley", "team": "Ghana", "group": "L", "flag": "\ud83c\uddec\ud83c\udded", "display": "Elijah W."}, {"id": 39, "name": "Robert Wilkinson", "team": "Norway", "group": "I", "flag": "\ud83c\uddf3\ud83c\uddf4", "display": "Robert W."}, {"id": 71, "name": "RonRico Williams", "team": "England", "group": "L", "flag": "\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f", "display": "RonRico W."}, {"id": 13, "name": "Jared Williamson", "team": "Saudi Arabia", "group": "H", "flag": "\ud83c\uddf8\ud83c\udde6", "display": "Jared W."}];
+
+const GROUPS={
+  A:{teams:[{f:'🇲🇽',n:'Mexico'},{f:'🇰🇷',n:'South Korea'},{f:'🇨🇿',n:'Czechia'},{f:'🇿🇦',n:'South Africa'}]},
+  B:{teams:[{f:'🇨🇭',n:'Switzerland'},{f:'🇨🇦',n:'Canada'},{f:'🇶🇦',n:'Qatar'},{f:'🇧🇦',n:'Bosnia & Herz.'}]},
+  C:{teams:[{f:'🇧🇷',n:'Brazil'},{f:'🇲🇦',n:'Morocco'},{f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿',n:'Scotland'},{f:'🇭🇹',n:'Haiti'}]},
+  D:{teams:[{f:'🇺🇸',n:'United States'},{f:'🇹🇷',n:'Turkey'},{f:'🇦🇺',n:'Australia'},{f:'🇵🇾',n:'Paraguay'}]},
+  E:{teams:[{f:'🇩🇪',n:'Germany'},{f:'🇪🇨',n:'Ecuador'},{f:'🇨🇮',n:'Ivory Coast'},{f:'🇨🇼',n:'Curaçao'}]},
+  F:{teams:[{f:'🇳🇱',n:'Netherlands'},{f:'🇯🇵',n:'Japan'},{f:'🇸🇪',n:'Sweden'},{f:'🇹🇳',n:'Tunisia'}]},
+  G:{teams:[{f:'🇧🇪',n:'Belgium'},{f:'🇮🇷',n:'Iran'},{f:'🇪🇬',n:'Egypt'},{f:'🇳🇿',n:'New Zealand'}]},
+  H:{teams:[{f:'🇪🇸',n:'Spain'},{f:'🇺🇾',n:'Uruguay'},{f:'🇸🇦',n:'Saudi Arabia'},{f:'🇨🇻',n:'Cape Verde'}]},
+  I:{teams:[{f:'🇫🇷',n:'France'},{f:'🇸🇳',n:'Senegal'},{f:'🇳🇴',n:'Norway'},{f:'🇮🇶',n:'Iraq'}]},
+  J:{teams:[{f:'🇦🇷',n:'Argentina'},{f:'🇦🇹',n:'Austria'},{f:'🇩🇿',n:'Algeria'},{f:'🇯🇴',n:'Jordan'}]},
+  K:{teams:[{f:'🇵🇹',n:'Portugal'},{f:'🇨🇴',n:'Colombia'},{f:'🇨🇩',n:'DR Congo'},{f:'🇺🇿',n:'Uzbekistan'}]},
+  L:{teams:[{f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿',n:'England'},{f:'🇭🇷',n:'Croatia'},{f:'🇵🇦',n:'Panama'},{f:'🇬🇭',n:'Ghana'}]},
+};
+
+const KO_ROUNDS=[
+  {id:'r32',label:'Round of 32',pts:3},
+  {id:'r16',label:'Round of 16',pts:5},
+  {id:'qf',label:'Quarterfinals',pts:8},
+  {id:'sf',label:'Semifinals',pts:12},
+  {id:'fin',label:'Final',pts:15},
+  {id:'champ',label:'World Cup Champion',pts:25},
+];
+
+const PTS={fb:2,ig:2,li:2,google:3,glassdoor:3,indeed:3};
+
+// Load shared state from localStorage (synced with admin dashboard)
+// ── LIVE API — TheSportsDB (CORS-friendly, no key needed) ───────────────────
+const TSDB_BASE = 'https://www.thesportsdb.com/api/v1/json/3';
+const WC_LEAGUE_ID = '4960';   // FIFA World Cup on TheSportsDB
+const WC_SEASON    = '2025-2026';
+
+const TEAM_NAME_MAP = {
+  'Mexico':'Mexico','South Korea':'South Korea','Korea Republic':'South Korea',
+  'Republic of Korea':'South Korea','Czechia':'Czechia','Czech Republic':'Czechia',
+  'South Africa':'South Africa','Switzerland':'Switzerland','Canada':'Canada',
+  'Qatar':'Qatar','Bosnia and Herzegovina':'Bosnia & Herz.',
+  'Bosnia & Herzegovina':'Bosnia & Herz.','Brazil':'Brazil','Morocco':'Morocco',
+  'Scotland':'Scotland','Haiti':'Haiti','United States':'United States',
+  'United States of America':'United States','USA':'United States',
+  'Turkey':'Turkey','Türkiye':'Turkey','Australia':'Australia','Paraguay':'Paraguay',
+  'Germany':'Germany','Ecuador':'Ecuador',"Cote d'Ivoire":'Ivory Coast',
+  "Côte d'Ivoire":'Ivory Coast','Ivory Coast':'Ivory Coast',
+  'Curaçao':'Curaçao','Curacao':'Curaçao','Netherlands':'Netherlands',
+  'Japan':'Japan','Sweden':'Sweden','Tunisia':'Tunisia','Belgium':'Belgium',
+  'Iran':'Iran','IR Iran':'Iran','Islamic Republic of Iran':'Iran',
+  'Egypt':'Egypt','New Zealand':'New Zealand','Spain':'Spain','Uruguay':'Uruguay',
+  'Saudi Arabia':'Saudi Arabia','Cape Verde':'Cape Verde','France':'France',
+  'Senegal':'Senegal','Norway':'Norway','Iraq':'Iraq','Argentina':'Argentina',
+  'Austria':'Austria','Algeria':'Algeria','Jordan':'Jordan','Portugal':'Portugal',
+  'Colombia':'Colombia','DR Congo':'DR Congo','Congo DR':'DR Congo',
+  'Democratic Republic of the Congo':'DR Congo','Uzbekistan':'Uzbekistan',
+  'England':'England','Croatia':'Croatia','Panama':'Panama','Ghana':'Ghana',
+};
+function mapTeam(n){ return TEAM_NAME_MAP[n]||(n||''); }
+
+// TheSportsDB round name → our KO round key
+const ROUND_MAP = {
+  'Round of 32':'r32','Round Of 32':'r32','1/16 Finals':'r32',
+  'Round of 16':'r16','Round Of 16':'r16','1/8 Finals':'r16',
+  'Quarter-Finals':'qf','Quarterfinals':'qf','Quarter Finals':'qf',
+  'Semi-Finals':'sf','Semifinals':'sf','Semi Finals':'sf',
+  'Final':'fin','Finals':'fin',
+};
+
+async function fetchLiveResults(){
+  showSyncStatus('syncing');
+  try {
+    // ── Fetch all WC 2026 events ──────────────────────────────────────────
+    const resp = await fetch(
+      `${TSDB_BASE}/eventsseason.php?id=${WC_LEAGUE_ID}&s=${encodeURIComponent(WC_SEASON)}`
+    );
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const events = data.events || [];
+
+    const newKO = {r32:[],r16:[],qf:[],sf:[],fin:[],champ:[]};
+    const groupPoints = {}; // {A: {Mexico:6, 'South Korea':3, ...}}
+    const groupPlayed = {}; // {A: {Mexico:3, ...}}
+
+    for(const ev of events){
+      const finished = ev.strStatus === 'Match Finished' || ev.intHomeScore !== null;
+      const home  = mapTeam(ev.strHomeTeam);
+      const away  = mapTeam(ev.strAwayTeam);
+      const round = ev.strRound || '';
+      const hScore = parseInt(ev.intHomeScore);
+      const aScore = parseInt(ev.intAwayScore);
+
+      // ── GROUP STAGE: round name is "Group A", "Group B" etc ──────────
+      const grpMatch = round.match(/Group ([A-L])/i);
+      if(grpMatch){
+        const letter = grpMatch[1].toUpperCase();
+        if(!groupPoints[letter]) groupPoints[letter]={};
+        if(!groupPlayed[letter]) groupPlayed[letter]={};
+        [home,away].forEach(t=>{
+          if(!groupPoints[letter][t]) groupPoints[letter][t]=0;
+          if(!groupPlayed[letter][t]) groupPlayed[letter][t]=0;
+        });
+        if(finished && !isNaN(hScore) && !isNaN(aScore)){
+          groupPlayed[letter][home]++;
+          groupPlayed[letter][away]++;
+          if(hScore>aScore){groupPoints[letter][home]+=3;}
+          else if(aScore>hScore){groupPoints[letter][away]+=3;}
+          else{groupPoints[letter][home]+=1;groupPoints[letter][away]+=1;}
+        }
+        continue;
+      }
+
+      // ── KNOCKOUT STAGE ───────────────────────────────────────────────
+      const roundKey = ROUND_MAP[round];
+      if(roundKey && finished && !isNaN(hScore) && !isNaN(aScore)){
+        let winner = null;
+        if(hScore>aScore) winner=home;
+        else if(aScore>hScore) winner=away;
+        else {
+          // Penalties: TheSportsDB stores as "intHomeScorePenalty"
+          const hPen = parseInt(ev.intHomeScorePenalty);
+          const aPen = parseInt(ev.intAwayScorePenalty);
+          if(!isNaN(hPen)&&!isNaN(aPen))
+            winner = hPen>aPen ? home : away;
+        }
+        if(winner&&!newKO[roundKey].includes(winner)) newKO[roundKey].push(winner);
+        if(roundKey==='fin'&&winner&&!newKO.champ.includes(winner)) newKO.champ.push(winner);
+      }
+    }
+
+    // ── Convert group points → standings ────────────────────────────────
+    for(const [letter, pts] of Object.entries(groupPoints)){
+      const played = groupPlayed[letter]||{};
+      // Sort: points desc, then by team name as tiebreak (full tiebreak needs GD but not available here)
+      const sorted = Object.entries(pts)
+        .sort((a,b)=>b[1]-a[1]||(a[0]<b[0]?-1:1));
+      if(!state.groupResults[letter]) state.groupResults[letter]={};
+      // Only write positions where at least 1 game played
+      const allThreePlayed = sorted.every(([t])=>(played[t]||0)>=3);
+      if(sorted[0]&&(played[sorted[0][0]]||0)>0) state.groupResults[letter].first  = sorted[0][0];
+      if(sorted[1]&&(played[sorted[1][0]]||0)>0) state.groupResults[letter].second = sorted[1][0];
+      if(sorted[2]&&(played[sorted[2][0]]||0)>0) state.groupResults[letter].third  = sorted[2][0];
+      if(allThreePlayed&&sorted[3])               state.groupResults[letter].last   = sorted[3][0];
+    }
+
+    // ── Merge KO results ────────────────────────────────────────────────
+    for(const[k,v] of Object.entries(newKO)) if(v.length>0) state.koResults[k]=v;
+
+    showSyncStatus('ok');
+    const active = document.querySelector('.page.active');
+    if(active){
+      const name = active.id.replace('page-','');
+      if(name==='results')   buildResults();
+      if(name==='standings') buildStandings();
+    }
+  } catch(e){
+    showSyncStatus('error');
+    console.warn('API sync failed:',e);
+  }
+}
+
+function showSyncStatus(status){
+  const el  = document.getElementById('sync-status');
+  const el2 = document.getElementById('results-sync-time');
+  const t   = new Date().toLocaleTimeString();
+  if(status==='syncing'){
+    if(el)  el.innerHTML  = '<span style="color:var(--gold)">⟳ Syncing…</span>';
+    if(el2) el2.textContent = 'Syncing…';
+  } else if(status==='ok'){
+    if(el)  el.innerHTML  = `<span style="color:var(--green)">✓ Live · ${t}</span>`;
+    if(el2) el2.textContent = `Last synced ${t}`;
+  } else {
+    if(el)  el.innerHTML  = '<span style="color:var(--red)">⚠ Sync failed</span>';
+    if(el2) el2.textContent = 'Sync failed — showing cached data';
+  }
+}
+
+function loadState(){
+  const s=localStorage.getItem('ttg_wc26_v4');
+  if(s) try{return JSON.parse(s);}catch(e){}
+  return {players:ALL_PLAYERS, groupResults:{}, koResults:{}, scores:[]};
+}
+
+let state=loadState();
+// If no players from localStorage, use built-in list
+if(!state.players||state.players.length===0) state.players=ALL_PLAYERS;
+
+// --- ROSTER ---
+function filterRoster(){
+  const q=(document.getElementById('search')?.value||'').toLowerCase();
+  const tbody=document.getElementById('roster-body');
+  const filtered=state.players
+    .filter(p=>!p.name.startsWith('New Hire'))
+    .filter(p=>p.name.toLowerCase().includes(q)||p.team.toLowerCase().includes(q)||('group '+p.group.toLowerCase()).includes(q))
+    .sort((a,b)=>{
+      const aLast=a.name.trim().split(' ').pop().toLowerCase();
+      const bLast=b.name.trim().split(' ').pop().toLowerCase();
+      return aLast.localeCompare(bLast);
+    });
+  tbody.innerHTML=filtered.map((p,i)=>{
+    const hi=q&&(p.name.toLowerCase().includes(q)||p.team.toLowerCase().includes(q));
+    return `<tr class="${hi?'highlight':''}">
+      <td style="color:var(--muted);font-family:'Bebas Neue',sans-serif;font-size:1rem;">${i+1}</td>
+      <td style="font-weight:600;">${p.display||p.name}</td>
+      <td>${p.team}</td>
+      <td><span class="badge badge-g">Group ${p.group}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// --- RESULTS (read-only display) ---
+function buildResults(){
+  const grid=document.getElementById('results-grid');
+  if(!grid)return;
+  const posLabels={first:'🥇 1st',second:'🥈 2nd',third:'🃏 3rd',last:'💀 4th'};
+  grid.innerHTML=Object.entries(GROUPS).map(([letter,g])=>{
+    const res=state.groupResults[letter]||{};
+    const rows=Object.entries(posLabels).map(([pos,label])=>{
+      const team=res[pos];
+      const t=team?g.teams.find(x=>x.n===team):null;
+      return `<div class="res-row"><span class="res-pos">${label}</span><span class="res-team">${t?t.f+' '+t.n:'<span class=res-empty>TBD</span>'}</span></div>`;
+    }).join('');
+    return `<div class="res-card"><div class="res-card-hd">Group ${letter}</div><div class="res-card-bd">${rows}</div></div>`;
+  }).join('');
+
+  // KO display
+  const koDiv=document.getElementById('ko-display');
+  if(!koDiv)return;
+  const allTeams=[];
+  for(const[g,d] of Object.entries(GROUPS)) d.teams.forEach(t=>allTeams.push({...t,group:g}));
+  koDiv.innerHTML=KO_ROUNDS.map(r=>{
+    const winners=state.koResults[r.id]||[];
+    const pills=winners.length
+      ?winners.map(name=>{const t=allTeams.find(x=>x.n===name);return `<span class="ko-winner-pill">${t?t.f:''} ${name}</span>`;}).join('')
+      :`<span class="ko-empty">No results yet</span>`;
+    return `<div class="ko-round"><div class="ko-round-title">${r.label} <span style="font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:400;color:var(--muted);">+${r.pts} pts</span></div><div class="ko-teams-display">${pills}</div></div>`;
+  }).join('');
+}
+
+// --- STANDINGS ---
+function calcSocialPts(p){
+  let pts=0;
+  ['fb','ig','li'].forEach(k=>{if(p.posts[k])pts+=PTS[k];});
+  ['google','glassdoor','indeed'].forEach(k=>{if(p.reviews[k])pts+=PTS[k];});
+  return pts;
+}
+function countActions(p){
+  return ['fb','ig','li'].filter(k=>p.posts[k]).length+['google','glassdoor','indeed'].filter(k=>p.reviews[k]).length;
+}
+function calcGamePts(p){
+  let pts=0;
+  const gr=state.groupResults[p.group]||{};
+  const activeTeam=p.team;
+  if(gr.first===activeTeam) pts+=5;
+  else if(gr.second===activeTeam) pts+=3;
+  else if(gr.third===activeTeam) pts+=1;
+  const koTeam=p.koTeam||p.team;
+  KO_ROUNDS.forEach(r=>{
+    const winners=state.koResults[r.id]||[];
+    if(winners.includes(koTeam)) pts+=r.pts;
+  });
+  return pts;
+}
+function buildStandings(){
+  const scored=state.players.filter(p=>!p.name.startsWith('New Hire')).map(p=>({
+    ...p,
+    socialPts:calcSocialPts(p),
+    gamePts:calcGamePts(p),
+    total:calcSocialPts(p)+calcGamePts(p),
+    actions:countActions(p),
+  }));
+  scored.sort((a,b)=>{
+    if(b.total!==a.total)return b.total-a.total;
+    if(b.actions!==a.actions)return b.actions-a.actions;
+    return(a.joinedAt||0)-(b.joinedAt||0);
+  });
+  scored.forEach((s,i)=>{const prev=scored[i-1];s.tied=prev&&prev.total===s.total;});
+
+  // Podium
+  const pod=document.getElementById('podium-wrap');
+  if(pod&&scored.length>=3){
+    const order=[1,0,2];const medals=['🥇','🥈','🥉'];const bars=['pb2','pb1','pb3'];
+    pod.innerHTML=`<div class="podium">${order.map((idx,pos)=>{
+      const p=scored[idx];
+      return`<div class="pod-slot">
+        <div class="pod-medal">${medals[pos]}</div>
+        <div class="pod-name">${p?.display||p?.name||'—'}</div>
+        <div class="pod-team">${p?.team||''}</div>
+        <div class="pod-pts">${p?.total||0} pts</div>
+        <div class="pod-bar ${bars[pos]}"></div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  const body=document.getElementById('lb-body');
+  if(!body)return;
+  body.innerHTML=scored.map((p,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    return`<div class="lb-row">
+      <div class="lb-rank ${rc}">${i+1}</div>
+      <div>
+        <div class="lb-player-name">${p.display||p.name}${p.tied?'<span style="font-size:.6rem;padding:.1rem .35rem;border-radius:3px;background:rgba(245,197,24,.15);color:var(--gold);border:1px solid var(--gold);margin-left:.35rem;">TIE</span>':''}</div>
+        <div class="lb-player-team">${p.team||''}${p.koTeam?' → '+p.koTeam:''}</div>
+      </div>
+      <div class="lb-pts">${p.gamePts}</div>
+      <div class="lb-pts" style="color:var(--green)">${p.socialPts}</div>
+      <div class="lb-pts ${p.tied?'tied':''}">${p.total}</div>
+      <div class="lb-sub">${p.actions}</div>
+    </div>`;
+  }).join('');
+}
+
+// --- NAV ---
+function nav(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.textContent.toLowerCase().startsWith(name.slice(0,4)))b.classList.add('active');});
+  if(name==='roster')filterRoster();
+  if(name==='standings')buildStandings();
+  if(name==='results')buildResults();
+}
+
+// Init
+filterRoster();
+buildResults();
+buildStandings();
+// Fetch live results immediately, then every 5 minutes
+fetchLiveResults();
+setInterval(fetchLiveResults, 5 * 60 * 1000);
+</script>
+</body>
+</html>
