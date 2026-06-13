@@ -457,12 +457,16 @@ function buildResults(){
 // --- STANDINGS ---
 function calcSocialPts(p){
   let pts=0;
-  ['fb','ig','li'].forEach(k=>{if(p.posts[k])pts+=PTS[k];});
-  ['google','glassdoor','indeed'].forEach(k=>{if(p.reviews[k])pts+=PTS[k];});
+  const posts=p.posts||{};
+  const reviews=p.reviews||{};
+  ['fb','ig','li'].forEach(k=>{if(posts[k])pts+=PTS[k];});
+  ['google','glassdoor','indeed'].forEach(k=>{if(reviews[k])pts+=PTS[k];});
   return pts;
 }
 function countActions(p){
-  return ['fb','ig','li'].filter(k=>p.posts[k]).length+['google','glassdoor','indeed'].filter(k=>p.reviews[k]).length;
+  const posts=p.posts||{};
+  const reviews=p.reviews||{};
+  return ['fb','ig','li'].filter(k=>posts[k]).length+['google','glassdoor','indeed'].filter(k=>reviews[k]).length;
 }
 function calcGamePts(p){
   let pts=0;
