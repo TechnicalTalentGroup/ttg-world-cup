@@ -414,10 +414,10 @@ const FD_BASE   = 'https://api.football-data.org/v4';
 const PROXY     = 'https://corsproxy.io/?url=';
 
 function fdFetch(url){
-  // Route through CORS proxy so GitHub Pages can reach football-data.org
-  return fetch(PROXY + encodeURIComponent(url), {
-    headers: {'X-Auth-Token': FD_TOKEN}
-  });
+  // Pass token as query param since corsproxy.io may strip custom headers
+  const sep = url.includes('?') ? '&' : '?';
+  const urlWithToken = url + sep + 'token=' + FD_TOKEN;
+  return fetch(PROXY + encodeURIComponent(urlWithToken));
 }
 
 const TEAM_NAME_MAP = {
