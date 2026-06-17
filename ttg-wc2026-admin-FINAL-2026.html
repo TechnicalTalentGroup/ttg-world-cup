@@ -883,6 +883,20 @@ if(state.players.length===0){
 }else{
   nextId=Math.max(...state.players.map(p=>p.id||0))+1;
 }
+// ── SEEDED RESULTS as of June 16, 2026 5:00 PM PST ─────────────────────────
+// Shown immediately while API attempts to sync
+// Groups I/J/K/L not yet played; France/Senegal kicks off 12pm PST (may be starting)
+const SEEDED_GROUP_RESULTS = {
+  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa' },
+  B: { first: 'Canada',        second: 'Bosnia & Herz.',third: 'Qatar',         last: 'Switzerland'  },
+  C: { first: 'Scotland',      second: 'Morocco',      third: 'Brazil',        last: 'Haiti'         },
+  D: { first: 'United States', second: 'Australia',    third: 'Turkey',        last: 'Paraguay'      },
+  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'       },
+  F: { first: 'Sweden',        second: 'Japan',        third: 'Netherlands',   last: 'Tunisia'       },
+};
+if(!state.groupResults || Object.keys(state.groupResults).length === 0){
+  state.groupResults = SEEDED_GROUP_RESULTS;
+}
 updateStats();
 // Auto-fetch live results on load (runs silently in background)
 fetchLiveResults();

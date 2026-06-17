@@ -542,25 +542,20 @@ function nav(name){
   if(name==='results')buildResults();
 }
 
-// Seed with known results as of June 15, 2026
-// These show immediately while API fetches latest data
-const SEEDED_RESULTS = {
-  groupResults: {
-    A: { first: 'Mexico', second: 'South Korea', third: 'Czechia', last: 'South Africa' },
-    B: { first: 'Canada', second: 'Bosnia & Herz.', third: 'Qatar', last: 'Switzerland' },
-    C: { first: 'Scotland', second: 'Morocco', third: 'Brazil', last: 'Haiti' },
-    D: { first: 'United States', second: 'Australia', third: 'Turkey', last: 'Paraguay' },
-  },
-  koResults: {}
+// ── SEEDED RESULTS as of June 16, 2026 5:00 PM PST ─────────────────────────
+// Shown immediately while API attempts to sync
+// Groups I/J/K/L not yet played; France/Senegal kicks off 12pm PST (may be starting)
+const SEEDED_GROUP_RESULTS = {
+  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa' },
+  B: { first: 'Canada',        second: 'Bosnia & Herz.',third: 'Qatar',         last: 'Switzerland'  },
+  C: { first: 'Scotland',      second: 'Morocco',      third: 'Brazil',        last: 'Haiti'         },
+  D: { first: 'United States', second: 'Australia',    third: 'Turkey',        last: 'Paraguay'      },
+  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'       },
+  F: { first: 'Sweden',        second: 'Japan',        third: 'Netherlands',   last: 'Tunisia'       },
 };
-// Note: Groups A-D have partial results (1 game played each)
-// Groups E-L haven't played yet as of June 15
-// Only seed if no existing data
-if(!state.groupResults || Object.keys(state.groupResults).length === 0) {
-  state.groupResults = SEEDED_RESULTS.groupResults;
-  state.koResults = SEEDED_RESULTS.koResults;
+if(!state.groupResults || Object.keys(state.groupResults).length === 0){
+  state.groupResults = SEEDED_GROUP_RESULTS;
 }
-
 // Init
 filterRoster();
 buildResults();
