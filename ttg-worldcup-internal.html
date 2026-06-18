@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TTG World Cup 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green: #006847; --green-light: #009a5c; --gold: #D4AF37; --gold-light: #f0cc5a;
+    --red: #C8102E; --bg: #0a0f0d; --surface: #111a14; --surface2: #1a2620;
+    --border: rgba(255,255,255,0.08); --text: #f0f4f1; --muted: #7a9080;
+    --font-display: 'Bebas Neue', sans-serif; --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace; --radius: 10px; --radius-sm: 6px;
+  }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 8px; }
+  .logo { font-family: var(--font-display); font-size: 22px; letter-spacing: 0.04em; color: var(--gold); }
+  .logo span { color: var(--text); }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-btn { background: none; border: none; color: var(--muted); font-family: var(--font-body); font-size: 13px; padding: 6px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.15s; }
+  .nav-btn:hover { color: var(--text); background: var(--surface2); }
+  .nav-btn.active { color: var(--gold); background: rgba(212,175,55,0.1); }
+
+  .hero { background: linear-gradient(135deg, var(--surface) 0%, #0d1f14 100%); border-bottom: 1px solid var(--border); padding: 2.5rem 1.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: '⚽'; position: absolute; font-size: 180px; opacity: 0.04; top: -20px; right: -20px; line-height: 1; }
+  .hero-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green-light); margin-bottom: 0.5rem; }
+  .hero-title { font-family: var(--font-display); font-size: clamp(36px, 6vw, 56px); letter-spacing: 0.03em; line-height: 1; color: var(--text); margin-bottom: 0.5rem; }
+  .hero-title span { color: var(--gold); }
+  .hero-sub { color: var(--muted); font-size: 14px; }
+  .stage-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,168,92,0.15); border: 1px solid rgba(0,168,92,0.3); color: var(--green-light); font-size: 12px; font-weight: 500; padding: 4px 12px; border-radius: 20px; margin-top: 1rem; }
+  .stage-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green-light); animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  .page { display: none; max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+  .page.active { display: block; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .summary-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500; }
+  .summary-val { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--text); margin-top: 4px; }
+  .summary-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .sec-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .sec-title { font-family: var(--font-display); font-size: 22px; letter-spacing: 0.03em; color: var(--text); }
+  .sec-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* LEADERBOARD */
+  .leaderboard { display: flex; flex-direction: column; gap: 8px; }
+  .lb-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.9rem 1.25rem; display: flex; flex-direction: row; align-items: flex-start; gap: 12px; }
+  .lb-row.rank-1 { border-color: var(--gold); background: rgba(212,175,55,0.06); }
+  .lb-row.rank-2 { border-color: #9e9e9e; background: rgba(158,158,158,0.04); }
+  .lb-row.rank-3 { border-color: #cd7f32; background: rgba(205,127,50,0.04); }
+  .lb-row.last { border-color: var(--green); background: rgba(0,104,71,0.08); }
+  .rank-num { font-family: var(--font-mono); font-size: 14px; color: var(--muted); text-align: center; flex-shrink: 0; width: 24px; padding-top: 2px; }
+  .rank-1 .rank-num { color: var(--gold); }
+  .rank-2 .rank-num { color: #c0c0c0; }
+  .rank-3 .rank-num { color: #cd7f32; }
+  .lb-middle { flex: 1; min-width: 0; }
+  .player-name { font-weight: 600; font-size: 15px; color: var(--text); }
+  .team-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .team-tag { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 1px solid var(--border); color: var(--muted); display: inline-flex; align-items: center; gap: 4px; }
+  .team-tag.t1 { border-color: rgba(212,175,55,0.4); color: var(--gold-light); background: rgba(212,175,55,0.07); }
+  .team-tag.t2 { border-color: rgba(59,130,246,0.3); color: #93c5fd; background: rgba(59,130,246,0.07); }
+  .team-tag.t3 { border-color: rgba(34,197,94,0.3); color: #86efac; background: rgba(34,197,94,0.07); }
+  .team-tag.t4 { border-color: rgba(156,163,175,0.2); color: var(--muted); background: rgba(156,163,175,0.05); }
+  .pts-block { text-align: right; flex-shrink: 0; }
+  .pts-display { font-family: var(--font-mono); font-size: 22px; font-weight: 500; color: var(--text); }
+  .pts-label { font-size: 10px; color: var(--muted); }
+  .last-tag { font-size: 11px; color: var(--green-light); font-weight: 500; margin-top: 2px; }
+
+  /* TEAMS PAGE */
+  .player-grid { display: flex; flex-direction: column; gap: 12px; }
+  .player-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .player-header { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .player-header-name { font-weight: 600; font-size: 16px; }
+  .player-total-label { font-size: 12px; color: var(--muted); }
+  .teams-row { display: grid; grid-template-columns: repeat(4, 1fr); }
+  @media(max-width: 600px) { .teams-row { grid-template-columns: repeat(2, 1fr); } }
+  .team-cell { padding: 0.9rem 1rem; border-right: 1px solid var(--border); }
+  .team-cell:last-child { border-right: none; }
+  .team-cell-tier { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .tc-t1 { color: var(--gold-light); }
+  .tc-t2 { color: #93c5fd; }
+  .tc-t3 { color: #86efac; }
+  .tc-t4 { color: var(--muted); }
+  .team-cell-flag { font-size: 22px; margin-bottom: 4px; }
+  .team-cell-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .team-cell-odds { font-size: 11px; color: var(--muted); font-family: var(--font-mono); margin-top: 2px; }
+
+  /* POINTS PAGE */
+  .points-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:600px){ .points-grid { grid-template-columns: 1fr; } }
+  .pts-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .pts-section-head { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+  .pts-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 0.6rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); gap: 8px; }
+  .pts-row:last-child { border-bottom: none; }
+  .pts-event { font-size: 13px; color: var(--text); flex: 1; }
+  .pts-note-sm { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .pts-val { font-family: var(--font-mono); font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .pts-val.pos { color: #86efac; }
+  .pts-val.neg { color: #fca5a5; }
+
+  /* PRIZES PAGE */
+  .prize-timeline { position: relative; padding-left: 28px; }
+  .prize-timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+  .timeline-stage { margin-bottom: 2rem; }
+  .stage-label { position: relative; font-family: var(--font-display); font-size: 18px; letter-spacing: 0.04em; color: var(--gold); margin-bottom: 1rem; }
+  .stage-label::before { content: ''; position: absolute; left: -24px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); border: 2px solid var(--bg); top: 6px; }
+  .prize-cards { display: flex; flex-direction: column; gap: 8px; }
+  .prize-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; display: flex; gap: 12px; }
+  .prize-icon { font-size: 24px; flex-shrink: 0; }
+  .prize-name { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .prize-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .prize-type { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .real { background: rgba(212,175,55,0.15); color: var(--gold-light); }
+  .funny { background: rgba(251,146,60,0.15); color: #fdba74; }
+  .consolation { background: rgba(0,168,92,0.15); color: var(--green-light); }
+  .loser-card { background: rgba(0,104,71,0.1); border-color: rgba(0,168,92,0.3); }
+  .champ-card { border-color: var(--gold); background: rgba(212,175,55,0.05); }
+
+  /* RULES PAGE */
+  .rules-list { display: flex; flex-direction: column; gap: 8px; }
+  .rule-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
+  .rule-title { font-weight: 600; font-size: 14px; color: var(--gold); margin-bottom: 4px; }
+  .rule-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  .tier-legend { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .tl-item { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+  .tl-1 { background: rgba(212,175,55,0.15); color: var(--gold-light); border: 1px solid rgba(212,175,55,0.3); }
+  .tl-2 { background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.25); }
+  .tl-3 { background: rgba(34,197,94,0.1); color: #86efac; border: 1px solid rgba(34,197,94,0.25); }
+  .tl-4 { background: rgba(156,163,175,0.08); color: var(--muted); border: 1px solid rgba(156,163,175,0.15); }
+
+  .footer { text-align: center; padding: 2rem 1.5rem; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); margin-top: 2rem; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">TTG <span>World Cup</span> 2026</div>
+  <nav class="nav">
+    <button class="nav-btn active" onclick="showPage('leaderboard', this)">Leaderboard</button>
+    <button class="nav-btn" onclick="showPage('teams', this)">Teams</button>
+    <button class="nav-btn" onclick="showPage('points', this)">Points</button>
+    <button class="nav-btn" onclick="showPage('prizes', this)">Prizes</button>
+    <button class="nav-btn" onclick="showPage('rules', this)">Rules</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Technical Talent Group</div>
+  <div class="hero-title">The <span>Cup</span> Is On</div>
+  <div class="hero-sub">12 players. 48 nations. 4 teams each. One champion.</div>
+  <div class="stage-badge"><span class="stage-dot"></span> Group Stage — Live Now</div>
+</div>
+
+<!-- LEADERBOARD -->
+<div id="page-leaderboard" class="page active">
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-label">Players</div>
+      <div class="summary-val">12</div>
+      <div class="summary-note">TTG team</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Teams Each</div>
+      <div class="summary-val">4</div>
+      <div class="summary-note">1 per tier</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Stage</div>
+      <div class="summary-val" style="font-size:15px;margin-top:8px;">Group Stage</div>
+      <div class="summary-note">Jun 12 – Jul 2</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Next Prize</div>
+      <div class="summary-val" style="font-size:15px;margin-top:8px;">After Groups</div>
+      <div class="summary-note">Group Stage Leader</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Grand Final</div>
+      <div class="summary-val" style="font-size:15px;margin-top:8px;">Jul 19</div>
+      <div class="summary-note">NJ/NY Stadium</div>
+    </div>
+  </div>
+
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Standings</div>
+      <div class="sec-sub">Points from all 4 of your teams combined</div>
+    </div>
+  </div>
+
+  <div class="leaderboard" id="leaderboard-list"></div>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:1.5rem;">Tournament just kicked off — all points start at 0. Check back after your teams play!</p>
+</div>
+
+<!-- TEAMS -->
+<div id="page-teams" class="page">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Team Assignments</div>
+      <div class="sec-sub">4 teams per person, one from each tier</div>
+    </div>
+  </div>
+  <div class="tier-legend">
+    <span class="tl-item tl-1">Tier 1 — Favorites (+450 to +5000)</span>
+    <span class="tl-item tl-2">Tier 2 — Contenders (+5000 to +15000)</span>
+    <span class="tl-item tl-3">Tier 3 — Dark Horses (+15000 to +35000)</span>
+    <span class="tl-item tl-4">Tier 4 — Longshots (+40000+)</span>
+  </div>
+  <div class="player-grid" id="player-grid"></div>
+</div>
+
+<!-- POINTS -->
+<div id="page-points" class="page">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Points System</div>
+      <div class="sec-sub">Points from all 4 of your teams add up together</div>
+    </div>
+  </div>
+  <div class="points-grid">
+    <div class="pts-section">
+      <div class="pts-section-head">⚽ Group Stage</div>
+      <div class="pts-row"><div><div class="pts-event">Win</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Draw</div></div><div class="pts-val pos">+2</div></div>
+      <div class="pts-row"><div><div class="pts-event">Loss</div></div><div class="pts-val neg">-1</div></div>
+      <div class="pts-row"><div><div class="pts-event">Goal scored</div><div class="pts-note-sm">per goal</div></div><div class="pts-val pos">+1</div></div>
+      <div class="pts-row"><div><div class="pts-event">Clean sheet</div></div><div class="pts-val pos">+3</div></div>
+      <div class="pts-row"><div><div class="pts-event">Advance from group</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Top the group</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Eliminated in groups</div></div><div class="pts-val neg">-3</div></div>
+      <div class="pts-row"><div><div class="pts-event">Red card</div><div class="pts-note-sm">per card</div></div><div class="pts-val neg">-2</div></div>
+      <div class="pts-row"><div><div class="pts-event">3+ yellows in a match</div></div><div class="pts-val neg">-1</div></div>
+    </div>
+    <div class="pts-section">
+      <div class="pts-section-head">🏆 Knockout Rounds</div>
+      <div class="pts-row"><div><div class="pts-event">Win — Round of 32</div></div><div class="pts-val pos">+8</div></div>
+      <div class="pts-row"><div><div class="pts-event">Win — Round of 16</div></div><div class="pts-val pos">+10</div></div>
+      <div class="pts-row"><div><div class="pts-event">Win — Quarterfinal</div></div><div class="pts-val pos">+15</div></div>
+      <div class="pts-row"><div><div class="pts-event">Win — Semifinal</div></div><div class="pts-val pos">+20</div></div>
+      <div class="pts-row"><div><div class="pts-event">Win the Final</div></div><div class="pts-val pos">+40</div></div>
+      <div class="pts-row"><div><div class="pts-event">3rd place finish</div></div><div class="pts-val pos">+15</div></div>
+      <div class="pts-row"><div><div class="pts-event">Penalty shootout win</div></div><div class="pts-val pos">+3</div></div>
+      <div class="pts-row"><div><div class="pts-event">Goal in knockout</div><div class="pts-note-sm">per goal</div></div><div class="pts-val pos">+2</div></div>
+      <div class="pts-row"><div><div class="pts-event">Clean sheet in knockout</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Knockout exit</div></div><div class="pts-val neg">-2</div></div>
+    </div>
+    <div class="pts-section">
+      <div class="pts-section-head">⚡ Upset Bonuses</div>
+      <div class="pts-row"><div><div class="pts-event">Beat a Tier 1 team</div></div><div class="pts-val pos">+10</div></div>
+      <div class="pts-row"><div><div class="pts-event">Beat a Tier 2 team</div></div><div class="pts-val pos">+6</div></div>
+      <div class="pts-row"><div><div class="pts-event">Win by 3+ goals</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Comeback win or draw</div></div><div class="pts-val pos">+5</div></div>
+      <div class="pts-row"><div><div class="pts-event">Added time winner</div></div><div class="pts-val pos">+4</div></div>
+      <div class="pts-row"><div><div class="pts-event">Score first in match</div></div><div class="pts-val pos">+2</div></div>
+      <div class="pts-row"><div><div class="pts-event">Man of the Match</div><div class="pts-note-sm">per award</div></div><div class="pts-val pos">+3</div></div>
+      <div class="pts-row"><div><div class="pts-event">Hat trick</div></div><div class="pts-val pos">+8</div></div>
+      <div class="pts-row"><div><div class="pts-event">Clean sheet vs Tier 1/2</div></div><div class="pts-val pos">+5</div></div>
+    </div>
+    <div class="pts-section">
+      <div class="pts-section-head">🟥 Penalty Box</div>
+      <div class="pts-row"><div><div class="pts-event">Lose by 3+ goals</div></div><div class="pts-val neg">-4</div></div>
+      <div class="pts-row"><div><div class="pts-event">Miss a penalty (open play)</div></div><div class="pts-val neg">-1</div></div>
+      <div class="pts-row"><div><div class="pts-event">Own goal</div></div><div class="pts-val neg">-2</div></div>
+      <div class="pts-row"><div><div class="pts-event">Lose penalty shootout</div></div><div class="pts-val neg">-3</div></div>
+      <div class="pts-row"><div><div class="pts-event">Player suspended</div><div class="pts-note-sm">misses next match</div></div><div class="pts-val neg">-2</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIZES -->
+<div id="page-prizes" class="page">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Prize Schedule</div>
+      <div class="sec-sub">Three moments. Mix of funny and real.</div>
+    </div>
+  </div>
+  <div class="prize-timeline">
+    <div class="timeline-stage">
+      <div class="stage-label">After Group Stage</div>
+      <div class="prize-cards">
+        <div class="prize-card">
+          <div class="prize-icon">🥇</div>
+          <div>
+            <div class="prize-name">Group Stage Leader</div>
+            <div class="prize-desc">Highest points after all group matches. First pick on their prize.</div>
+            <span class="prize-type real">Real Prize</span>
+          </div>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">😬</div>
+          <div>
+            <div class="prize-name">The Early Bubble</div>
+            <div class="prize-desc">Lowest points after groups — celebrated not shamed. Gets a mystery gift bag. "It's not about how you start..."</div>
+            <span class="prize-type funny">Funny + Real</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-stage">
+      <div class="stage-label">After Quarterfinals</div>
+      <div class="prize-cards">
+        <div class="prize-card">
+          <div class="prize-icon">⚡</div>
+          <div>
+            <div class="prize-name">Upset King / Queen</div>
+            <div class="prize-desc">Most upset bonus points through the QFs. Rewards the player whose teams punched above their weight.</div>
+            <span class="prize-type real">Real Prize</span>
+          </div>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">🎭</div>
+          <div>
+            <div class="prize-name">Most Dramatic</div>
+            <div class="prize-desc">Most drama points — added time goals, comeback wins, shootout wins. Awarded the title "Most Theatrical Team."</div>
+            <span class="prize-type funny">Funny Prize</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="timeline-stage">
+      <div class="stage-label">Grand Final — July 19</div>
+      <div class="prize-cards">
+        <div class="prize-card champ-card">
+          <div class="prize-icon">🏆</div>
+          <div>
+            <div class="prize-name">TTG World Cup Champion</div>
+            <div class="prize-desc">Highest overall points at tournament end. The winner of winners. Best prize of the competition.</div>
+            <span class="prize-type real">Big Real Prize</span>
+          </div>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">🥈</div>
+          <div>
+            <div class="prize-name">Runner-Up</div>
+            <div class="prize-desc">2nd highest total. Still walks away with something solid.</div>
+            <span class="prize-type real">Real Prize</span>
+          </div>
+        </div>
+        <div class="prize-card loser-card">
+          <div class="prize-icon">💚</div>
+          <div>
+            <div class="prize-name">The Golden Boot-Out</div>
+            <div class="prize-desc">Lowest overall points — but treated with full respect. A genuine, thoughtful consolation prize. Celebrated at the ceremony. "It just wasn't your year. But we see you."</div>
+            <span class="prize-type consolation">Genuine Consolation Prize</span>
+          </div>
+        </div>
+        <div class="prize-card">
+          <div class="prize-icon">🛡️</div>
+          <div>
+            <div class="prize-name">Iron Wall Award</div>
+            <div class="prize-desc">Most clean sheet points overall. Defensive legend of the competition. Funny trophy + small real prize.</div>
+            <span class="prize-type funny">Funny + Real</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES -->
+<div id="page-rules" class="page">
+  <div class="sec-header">
+    <div>
+      <div class="sec-title">Rules & Mechanics</div>
+      <div class="sec-sub">How it all works</div>
+    </div>
+  </div>
+  <div class="rules-list">
+    <div class="rule-item"><div class="rule-title">Your 4 teams</div><div class="rule-body">You score points from ALL 4 of your assigned teams combined. If two of your teams play each other, you score points for whichever one wins, draws, scores, or earns bonuses — both sides count.</div></div>
+    <div class="rule-item"><div class="rule-title">Tracking</div><div class="rule-body">Points are updated after every match day. The scorekeeper posts updates to the group chat and the leaderboard here reflects the latest totals.</div></div>
+    <div class="rule-item"><div class="rule-title">Tier definitions</div><div class="rule-body">Tier 1 = Spain, France, England, Portugal, Brazil, Argentina, Germany, Netherlands, Belgium, Norway, Colombia, Mexico. Tier 2 = Morocco through Australia. These are locked from the draw and used for all upset bonus calculations.</div></div>
+    <div class="rule-item"><div class="rule-title">Tiebreakers</div><div class="rule-body">If two players are tied on points: (1) most combined wins across all 4 teams, then (2) most combined goals scored, then (3) coin flip at the prize ceremony.</div></div>
+    <div class="rule-item"><div class="rule-title">Golden Boot-Out eligibility</div><div class="rule-body">Must have actively participated — at least one reaction or comment in the group chat per stage. Stops someone from going silent and accidentally winning the consolation prize.</div></div>
+    <div class="rule-item"><div class="rule-title">Drama points</div><div class="rule-body">Comeback wins (+5), added-time goals (+4), and shootout wins (+3) count toward total points AND the Most Dramatic award separately. Scorekeeper keeps a side tally.</div></div>
+    <div class="rule-item"><div class="rule-title">Prize ceremony</div><div class="rule-body">Three moments: after group stage, after quarterfinals, and a Grand Final celebration on or around July 19.</div></div>
+  </div>
+</div>
+
+<footer class="footer">TTG World Cup 2026 &nbsp; Jun 12 – Jul 19 &nbsp; Technical Talent Group</footer>
+
+<script>
+const players = [
+  { name: "Dee",      teams: [
+    {name:"Netherlands", flag:"🇳🇱", odds:"+1700", tier:1},
+    {name:"Switzerland", flag:"🇨🇭", odds:"+7000", tier:2},
+    {name:"Scotland", flag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿", odds:"+25000", tier:3},
+    {name:"Haiti",       flag:"🇭🇹", odds:"+150000", tier:4}
+  ]},
+  { name: "Pocholo",  teams: [
+    {name:"Argentina",   flag:"🇦🇷", odds:"+950", tier:1},
+    {name:"South Korea", flag:"🇰🇷", odds:"+10000", tier:2},
+    {name:"Tunisia",     flag:"🇹🇳", odds:"+30000", tier:3},
+    {name:"New Zealand", flag:"🇳🇿", odds:"+80000", tier:4}
+  ]},
+  { name: "Amanda",   teams: [
+    {name:"England",     flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", odds:"+700", tier:1},
+    {name:"United States", flag:"🇺🇸", odds:"+5500", tier:2},
+    {name:"Iran",        flag:"🇮🇷", odds:"+25000", tier:3},
+    {name:"Qatar",       flag:"🇶🇦", odds:"+75000", tier:4}
+  ]},
+  { name: "Amber",    teams: [
+    {name:"Belgium",     flag:"🇧🇪", odds:"+2200", tier:1},
+    {name:"Ecuador",     flag:"🇪🇨", odds:"+12000", tier:2},
+    {name:"Czechia", flag:"🇨🇿", odds:"+20000", tier:3},
+    {name:"Ghana",       flag:"🇬🇭", odds:"+50000", tier:4}
+  ]},
+  { name: "Glenn",    teams: [
+    {name:"Norway",      flag:"🇳🇴", odds:"+3300", tier:1},
+    {name:"Senegal",     flag:"🇸🇳", odds:"+12000", tier:2},
+    {name:"Uzbekistan", flag:"🇺🇿", odds:"+35000", tier:3},
+    {name:"Cape Verde",  flag:"🇨🇻", odds:"+100000", tier:4}
+  ]},
+  { name: "Kenny",    teams: [
+    {name:"Germany",     flag:"🇩🇪", odds:"+1300", tier:1},
+    {name:"Croatia",     flag:"🇭🇷", odds:"+8000", tier:2},
+    {name:"Sweden", flag:"🇸🇪", odds:"+15000", tier:3},
+    {name:"Algeria",     flag:"🇩🇿", odds:"+40000", tier:4}
+  ]},
+  { name: "Dylan",    teams: [
+    {name:"Mexico",      flag:"🇲🇽", odds:"+5000", tier:1},
+    {name:"Turkey",      flag:"🇹🇷", odds:"+6500", tier:2},
+    {name:"Iraq", flag:"🇮🇶", odds:"+25000", tier:3},
+    {name:"DR Congo", flag:"🇨🇩", odds:"+40000", tier:4}
+  ]},
+  { name: "Eddie",    teams: [
+    {name:"Portugal",    flag:"🇵🇹", odds:"+800", tier:1},
+    {name:"Canada",      flag:"🇨🇦", odds:"+10000", tier:2},
+    {name:"Austria",     flag:"🇦🇹", odds:"+15000", tier:3},
+    {name:"Saudi Arabia",flag:"🇸🇦", odds:"+60000", tier:4}
+  ]},
+  { name: "Marcello", teams: [
+    {name:"Brazil",      flag:"🇧🇷", odds:"+900", tier:1},
+    {name:"Uruguay",     flag:"🇺🇾", odds:"+5500", tier:2},
+    {name:"Jordan", flag:"🇯🇴", odds:"+20000", tier:3},
+    {name:"Panama",      flag:"🇵🇦", odds:"+80000", tier:4}
+  ]},
+  { name: "Austin",   teams: [
+    {name:"Spain",       flag:"🇪🇸", odds:"+450", tier:1},
+    {name:"Japan",       flag:"🇯🇵", odds:"+5000", tier:2},
+    {name:"Paraguay",    flag:"🇵🇾", odds:"+30000", tier:3},
+    {name:"Bosnia & Herz.", flag:"🇧🇦", odds:"+40000", tier:4}
+  ]},
+  { name: "Logan",    teams: [
+    {name:"France",      flag:"🇫🇷", odds:"+500", tier:1},
+    {name:"Australia",   flag:"🇦🇺", odds:"+15000", tier:2},
+    {name:"Curaçao", flag:"🇨🇼", odds:"+100000", tier:4},
+    {name:"Ivory Coast", flag:"🇨🇮", odds:"+50000", tier:4}
+  ]},
+  { name: "Izzy",     teams: [
+    {name:"Colombia",    flag:"🇨🇴", odds:"+4000", tier:1},
+    {name:"Morocco",     flag:"🇲🇦", odds:"+5000", tier:2},
+    {name:"South Africa", flag:"🇿🇦", odds:"+50000", tier:4},
+    {name:"Egypt",       flag:"🇪🇬", odds:"+50000", tier:4}
+  ]},
+];
+
+const tierClass = ["","t1","t2","t3","t4"];
+const tierLabel = ["","Tier 1","Tier 2","Tier 3","Tier 4"];
+const tierCellClass = ["","tc-t1","tc-t2","tc-t3","tc-t4"];
+
+// ── LIVE RESULTS as of June 18, 2026 ────────────────────────────────────────
+const RESULTS = {
+  // GROUP A — Jun 11-12 (1 game each, June 18 games not yet played)
+  'Mexico':          { gp:1, w:1, d:0, l:0, gf:2, ga:0, cs:1, rc:1, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'South Korea':     { gp:1, w:1, d:0, l:0, gf:2, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Czechia':         { gp:1, w:0, d:0, l:1, gf:1, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'South Africa':    { gp:1, w:0, d:0, l:1, gf:0, ga:2, cs:0, rc:2, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP B — Jun 12-13 (1 game each, June 18 games not yet played)
+  'Canada':          { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Bosnia & Herz.':  { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Qatar':           { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Switzerland':     { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP C — Jun 13
+  'Brazil':          { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Morocco':         { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Scotland':        { gp:1, w:1, d:0, l:0, gf:1, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Haiti':           { gp:1, w:0, d:0, l:1, gf:0, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP D — Jun 12-13
+  'United States':   { gp:1, w:1, d:0, l:0, gf:4, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Paraguay':        { gp:1, w:0, d:0, l:1, gf:1, ga:4, cs:0, rc:0, y3:0, og:0, loseBy3:1, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Australia':       { gp:1, w:1, d:0, l:0, gf:2, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Turkey':          { gp:1, w:0, d:0, l:1, gf:0, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP E — Jun 14
+  'Germany':         { gp:1, w:1, d:0, l:0, gf:7, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Curaçao':         { gp:1, w:0, d:0, l:1, gf:1, ga:7, cs:0, rc:0, y3:0, og:0, loseBy3:1, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Ivory Coast':     { gp:1, w:1, d:0, l:0, gf:1, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Ecuador':         { gp:1, w:0, d:0, l:1, gf:0, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP F — Jun 14
+  'Netherlands':     { gp:1, w:0, d:1, l:0, gf:2, ga:2, cs:0, rc:0, y3:0, og:1, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Japan':           { gp:1, w:0, d:1, l:0, gf:2, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Sweden':          { gp:1, w:1, d:0, l:0, gf:5, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Tunisia':         { gp:1, w:0, d:0, l:1, gf:1, ga:5, cs:0, rc:0, y3:0, og:0, loseBy3:1, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP G — Jun 15
+  'Belgium':         { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Egypt':           { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Iran':            { gp:1, w:0, d:1, l:0, gf:2, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'New Zealand':     { gp:1, w:0, d:1, l:0, gf:2, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP H — Jun 15
+  'Spain':           { gp:1, w:0, d:1, l:0, gf:0, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Cape Verde':      { gp:1, w:0, d:1, l:0, gf:0, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Saudi Arabia':    { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Uruguay':         { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP I — Jun 16: France 3-1 Senegal | Norway 4-1 Iraq
+  'France':          { gp:1, w:1, d:0, l:0, gf:3, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Senegal':         { gp:1, w:0, d:0, l:1, gf:1, ga:3, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Norway':          { gp:1, w:1, d:0, l:0, gf:4, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Iraq':            { gp:1, w:0, d:0, l:1, gf:1, ga:4, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP J — Jun 16-17: Argentina 3-0 Algeria | Austria 3-1 Jordan
+  'Argentina':       { gp:1, w:1, d:0, l:0, gf:3, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Algeria':         { gp:1, w:0, d:0, l:1, gf:0, ga:3, cs:0, rc:0, y3:0, og:0, loseBy3:1, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Austria':         { gp:1, w:1, d:0, l:0, gf:3, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Jordan':          { gp:1, w:0, d:0, l:1, gf:1, ga:3, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP K — Jun 17: Portugal 1-1 DR Congo | Colombia 3-1 Uzbekistan
+  'Portugal':        { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'DR Congo':        { gp:1, w:0, d:1, l:0, gf:1, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Colombia':        { gp:1, w:1, d:0, l:0, gf:3, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Uzbekistan':      { gp:1, w:0, d:0, l:1, gf:1, ga:3, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  // GROUP L — Jun 17: England 4-2 Croatia | Ghana 1-0 Panama
+  'England':         { gp:1, w:1, d:0, l:0, gf:4, ga:2, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Croatia':         { gp:1, w:0, d:0, l:1, gf:2, ga:4, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Ghana':           { gp:1, w:1, d:0, l:0, gf:1, ga:0, cs:1, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+  'Panama':          { gp:1, w:0, d:0, l:1, gf:0, ga:1, cs:0, rc:0, y3:0, og:0, loseBy3:0, missedPen:0, eliminated:false, advanced:false, topped:false },
+};
+
+function calcPts(player) {
+  let pts = 0;
+  for (const team of player.teams) {
+    // Normalize team name
+    const name = team.name === 'USA' ? 'United States' : 
+                 team.name === "Cote d'Ivoire" ? 'Ivory Coast' : team.name;
+    const r = RESULTS[name];
+    if (!r) continue;
+    // ── Group stage ──────────────────────────────────────────────────────
+    pts += r.w * 5;              // Win +5
+    pts += r.d * 2;              // Draw +2
+    pts += r.l * -1;             // Loss -1
+    pts += r.gf * 1;             // Goals scored +1 each
+    pts += r.cs * 3;             // Clean sheet +3
+    // ── Discipline ───────────────────────────────────────────────────────
+    pts += r.rc * -2;            // Red card -2 each
+    pts += r.y3 * -1;            // 3+ yellows in a match -1
+    pts += (r.og||0) * -2;       // Own goal -2 each
+    pts += (r.missedPen||0) * -1;// Missed penalty -1 each
+    // ── Scoreline penalties ──────────────────────────────────────────────
+    pts += (r.loseBy3||0) * -4;  // Lose by 3+ goals -4
+    // ── Group stage outcomes (set at end of group stage) ─────────────────
+    if (r.eliminated) pts -= 3;  // Eliminated in groups -3
+    if (r.advanced)   pts += 5;  // Advance from group +5
+    if (r.topped)     pts += 5;  // Top the group +5
+  }
+  return pts;
+}
+
+function buildLeaderboard() {
+  const sorted = [...players].map(p => ({...p, pts: calcPts(p)})).sort((a,b) => b.pts - a.pts);
+  const list = document.getElementById('leaderboard-list');
+  list.innerHTML = '';
+  sorted.forEach((p, i) => {
+    const rank = i + 1;
+    const isLast = rank === sorted.length;
+    let rowClass = 'lb-row';
+    if (rank === 1) rowClass += ' rank-1';
+    else if (rank === 2) rowClass += ' rank-2';
+    else if (rank === 3) rowClass += ' rank-3';
+    else if (isLast) rowClass += ' last';
+
+    const tags = p.teams.map(t =>
+      `<span class="team-tag ${tierClass[t.tier]}">${t.flag} ${t.name}</span>`
+    ).join('');
+
+    list.innerHTML += `
+      <div class="${rowClass}">
+        <div class="rank-num">${rank === 1 ? '👑' : rank}</div>
+        <div class="lb-middle">
+          <div class="player-name">${p.name}</div>
+          <div class="team-tags">${tags}</div>
+          ${isLast ? '<div class="last-tag" style="font-size:11px;color:var(--green-light);font-weight:500;margin-top:4px;">💚 Golden Boot-Out contender</div>' : ''}
+        </div>
+        <div class="pts-block">
+          <div class="pts-display">${p.pts}</div>
+          <div class="pts-label">pts</div>
+        </div>
+      </div>`;
+  });
+}
+
+function buildTeams() {
+  const grid = document.getElementById('player-grid');
+  grid.innerHTML = '';
+  players.forEach(p => {
+    const cells = p.teams.map(t => `
+      <div class="team-cell">
+        <div class="team-cell-tier ${tierCellClass[t.tier]}">${tierLabel[t.tier]}</div>
+        <div class="team-cell-flag">${t.flag}</div>
+        <div class="team-cell-name">${t.name}</div>
+        <div class="team-cell-odds">${t.odds}</div>
+      </div>`).join('');
+    grid.innerHTML += `
+      <div class="player-block">
+        <div class="player-header">
+          <div class="player-header-name">${p.name}</div>
+          <div class="player-total-label">4 teams</div>
+        </div>
+        <div class="teams-row">${cells}</div>
+      </div>`;
+  });
+}
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── SEEDED RESULTS as of June 18, 2026 ─────────────────────────────────────
+// Games played through June 17. June 18 games (Czechia/SA, Swiss/Bosnia, Canada/Qatar, Mexico/SK) TBD
+const SEEDED_GROUP_RESULTS = {
+  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa'  },
+  B: { first: 'Canada',        second: 'Bosnia & Herz.',third: 'Qatar',         last: 'Switzerland'   },
+  C: { first: 'Scotland',      second: 'Morocco',      third: 'Brazil',        last: 'Haiti'          },
+  D: { first: 'United States', second: 'Australia',    third: 'Turkey',        last: 'Paraguay'       },
+  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'        },
+  F: { first: 'Sweden',        second: 'Japan',        third: 'Netherlands',   last: 'Tunisia'        },
+  G: { first: 'New Zealand',   second: 'Iran',         third: 'Egypt',         last: 'Belgium'        },
+  H: { first: 'Saudi Arabia',  second: 'Uruguay',      third: 'Spain',         last: 'Cape Verde'     },
+  I: { first: 'France',        second: 'Norway',       third: 'Senegal',       last: 'Iraq'           },
+  J: { first: 'Argentina',     second: 'Austria',      third: 'Jordan',        last: 'Algeria'        },
+  K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'     },
+  L: { first: 'England',       second: 'Ghana',        third: 'Croatia',       last: 'Panama'         },
+};
+if(!state.groupResults || Object.keys(state.groupResults).length === 0){
+  state.groupResults = SEEDED_GROUP_RESULTS;
+}
+buildLeaderboard();
+buildTeams();
+</script>
+</body>
+</html>

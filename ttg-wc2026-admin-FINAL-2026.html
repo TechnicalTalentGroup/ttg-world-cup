@@ -883,16 +883,21 @@ if(state.players.length===0){
 }else{
   nextId=Math.max(...state.players.map(p=>p.id||0))+1;
 }
-// ── SEEDED RESULTS as of June 16, 2026 5:00 PM PST ─────────────────────────
-// Shown immediately while API attempts to sync
-// Groups I/J/K/L not yet played; France/Senegal kicks off 12pm PST (may be starting)
+// ── SEEDED RESULTS as of June 18, 2026 ─────────────────────────────────────
+// Games played through June 17. June 18 games (Czechia/SA, Swiss/Bosnia, Canada/Qatar, Mexico/SK) TBD
 const SEEDED_GROUP_RESULTS = {
-  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa' },
-  B: { first: 'Canada',        second: 'Bosnia & Herz.',third: 'Qatar',         last: 'Switzerland'  },
-  C: { first: 'Scotland',      second: 'Morocco',      third: 'Brazil',        last: 'Haiti'         },
-  D: { first: 'United States', second: 'Australia',    third: 'Turkey',        last: 'Paraguay'      },
-  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'       },
-  F: { first: 'Sweden',        second: 'Japan',        third: 'Netherlands',   last: 'Tunisia'       },
+  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa'  },
+  B: { first: 'Canada',        second: 'Bosnia & Herz.',third: 'Qatar',         last: 'Switzerland'   },
+  C: { first: 'Scotland',      second: 'Morocco',      third: 'Brazil',        last: 'Haiti'          },
+  D: { first: 'United States', second: 'Australia',    third: 'Turkey',        last: 'Paraguay'       },
+  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'        },
+  F: { first: 'Sweden',        second: 'Japan',        third: 'Netherlands',   last: 'Tunisia'        },
+  G: { first: 'New Zealand',   second: 'Iran',         third: 'Egypt',         last: 'Belgium'        },
+  H: { first: 'Saudi Arabia',  second: 'Uruguay',      third: 'Spain',         last: 'Cape Verde'     },
+  I: { first: 'France',        second: 'Norway',       third: 'Senegal',       last: 'Iraq'           },
+  J: { first: 'Argentina',     second: 'Austria',      third: 'Jordan',        last: 'Algeria'        },
+  K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'     },
+  L: { first: 'England',       second: 'Ghana',        third: 'Croatia',       last: 'Panama'         },
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
