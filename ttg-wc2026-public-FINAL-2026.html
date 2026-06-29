@@ -542,25 +542,32 @@ function nav(name){
   if(name==='results')buildResults();
 }
 
-// ── SEEDED RESULTS as of June 23, 2026 ─────────────────────────────────────
-// Colombia vs DR Congo (tonight 10pm ET) and Panama vs Croatia (finishing now) not yet final
-// Groups C, D, E not yet played 3rd game
+// ── SEEDED RESULTS as of June 29, 2026 ─────────────────────────────────────
+// Group stage COMPLETE. R32 started June 28.
+// Canada 1-0 South Africa confirmed. Brazil/Japan, Germany/Paraguay, Netherlands/Morocco today.
 const SEEDED_GROUP_RESULTS = {
-  A: { first: 'Mexico',        second: 'South Korea',  third: 'Czechia',       last: 'South Africa'  },
-  B: { first: 'Canada',        second: 'Switzerland',  third: 'Bosnia & Herz.',last: 'Qatar'          },
-  C: { first: 'Brazil',        second: 'Morocco',      third: 'Scotland',      last: 'Haiti'          },
-  D: { first: 'United States', second: 'Australia',    third: 'Paraguay',      last: 'Turkey'         },
-  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'        },
-  F: { first: 'Japan',         second: 'Netherlands',  third: 'Sweden',        last: 'Tunisia'        },
-  G: { first: 'Egypt',         second: 'New Zealand',  third: 'Iran',          last: 'Belgium'        },
-  H: { first: 'Spain',         second: 'Uruguay',      third: 'Cape Verde',    last: 'Saudi Arabia'   },
-  I: { first: 'France',        second: 'Norway',       third: 'Senegal',       last: 'Iraq'           },
-  J: { first: 'Argentina',     second: 'Algeria',      third: 'Austria',       last: 'Jordan'         },
-  K: { first: 'Portugal',      second: 'Colombia',     third: 'DR Congo',      last: 'Uzbekistan'     },
-  L: { first: 'England',       second: 'Ghana',        third: 'Croatia',       last: 'Panama'         },
+  A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
+  B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
+  C: { first: 'Brazil',        second: 'Morocco',      third: 'Scotland',      last: 'Haiti'           },
+  D: { first: 'United States', second: 'Australia',    third: 'Paraguay',      last: 'Turkey'          },
+  E: { first: 'Germany',       second: 'Ivory Coast',  third: 'Ecuador',       last: 'Curaçao'         },
+  F: { first: 'Netherlands',   second: 'Japan',        third: 'Sweden',        last: 'Tunisia'         },
+  G: { first: 'Belgium',       second: 'Egypt',        third: 'Iran',          last: 'New Zealand'     },
+  H: { first: 'Spain',         second: 'Cape Verde',   third: 'Uruguay',       last: 'Saudi Arabia'    },
+  I: { first: 'France',        second: 'Norway',       third: 'Senegal',       last: 'Iraq'            },
+  J: { first: 'Argentina',     second: 'Austria',      third: 'Algeria',       last: 'Jordan'          },
+  K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
+  L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
+};
+// R32 winners so far
+const SEEDED_KO_RESULTS = {
+  r32: ['Canada'],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
+}
+if(!state.koResults || Object.keys(state.koResults).length === 0){
+  state.koResults = SEEDED_KO_RESULTS;
 }
 // Init
 filterRoster();
