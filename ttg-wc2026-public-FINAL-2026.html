@@ -542,9 +542,8 @@ function nav(name){
   if(name==='results')buildResults();
 }
 
-// ── SEEDED RESULTS as of June 29, 2026 ─────────────────────────────────────
-// Group stage COMPLETE. R32 started June 28.
-// Canada 1-0 South Africa confirmed. Brazil/Japan, Germany/Paraguay, Netherlands/Morocco today.
+// ── SEEDED RESULTS as of July 1, 2026 ───────────────────────────────────────
+// R32 complete through June 30. July 1 games (England/DR Congo, Belgium/Senegal, USA/Bosnia) not yet played.
 const SEEDED_GROUP_RESULTS = {
   A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
   B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
@@ -559,15 +558,34 @@ const SEEDED_GROUP_RESULTS = {
   K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
   L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
 };
-// R32 winners so far
+// R32 winners through June 30 (+3 pts each for contractor scoring)
 const SEEDED_KO_RESULTS = {
-  r32: ['Canada'],
+  r32: ['Canada', 'Brazil', 'Paraguay', 'Morocco', 'Norway', 'France', 'Mexico'],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
 }
-if(!state.koResults || Object.keys(state.koResults).length === 0){
-  state.koResults = SEEDED_KO_RESULTS;
+if(!state.koResults) state.koResults = {};
+for(const [round, winners] of Object.entries(SEEDED_KO_RESULTS)){
+  if(!state.koResults[round] || state.koResults[round].length === 0){
+    state.koResults[round] = winners;
+  } else {
+    for(const w of winners){
+      if(!state.koResults[round].includes(w)) state.koResults[round].push(w);
+    }
+  }
+}
+// Always seed KO results — merge with any existing state
+if(!state.koResults) state.koResults = {};
+for(const [round, winners] of Object.entries(SEEDED_KO_RESULTS)){
+  if(!state.koResults[round] || state.koResults[round].length === 0){
+    state.koResults[round] = winners;
+  } else {
+    // Merge — add any seeded winners not already in state
+    for(const w of winners){
+      if(!state.koResults[round].includes(w)) state.koResults[round].push(w);
+    }
+  }
 }
 // Init
 filterRoster();
