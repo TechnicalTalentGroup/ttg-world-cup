@@ -542,8 +542,8 @@ function nav(name){
   if(name==='results')buildResults();
 }
 
-// ── SEEDED RESULTS as of July 1, 2026 (midday update) ───────────────────────
-// England 2-1 DR Congo confirmed. Belgium vs Senegal in progress. USA vs Bosnia tonight.
+// ── SEEDED RESULTS as of July 2, 2026 ───────────────────────────────────────
+// R32 complete through July 1. Spain/Austria, Portugal/Croatia, Switzerland/Algeria today.
 const SEEDED_GROUP_RESULTS = {
   A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
   B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
@@ -558,10 +558,9 @@ const SEEDED_GROUP_RESULTS = {
   K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
   L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
 };
-// R32 winners through July 1 morning (+3 pts each for contractor scoring)
-// England confirmed. Belgium/Senegal and USA/Bosnia still in progress.
+// R32 winners through July 1 — all 11 confirmed, 5 remaining today/tomorrow
 const SEEDED_KO_RESULTS = {
-  r32: ['Canada', 'Brazil', 'Paraguay', 'Morocco', 'Norway', 'France', 'Mexico', 'England'],
+  r32: ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium','United States'],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
