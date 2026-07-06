@@ -883,8 +883,9 @@ if(state.players.length===0){
 }else{
   nextId=Math.max(...state.players.map(p=>p.id||0))+1;
 }
-// ── SEEDED RESULTS as of July 2, 2026 ───────────────────────────────────────
-// R32 complete through July 1. Spain/Austria, Portugal/Croatia, Switzerland/Algeria today.
+// ── SEEDED RESULTS as of July 6, 2026 ───────────────────────────────────────
+// R32 complete. R16: Morocco 3-0 Canada, France 1-0 Paraguay, Norway 2-1 Brazil confirmed.
+// Mexico vs England (Jul 5), Portugal vs Spain (Jul 6 3pm), USA vs Belgium (Jul 6 8pm) - pending/today.
 const SEEDED_GROUP_RESULTS = {
   A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
   B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
@@ -899,9 +900,11 @@ const SEEDED_GROUP_RESULTS = {
   K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
   L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
 };
-// R32 winners through July 1 — all 11 confirmed, 5 remaining today/tomorrow
+// R32 winners (+3 pts) | R16 winners (+5 pts)
 const SEEDED_KO_RESULTS = {
-  r32: ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium','United States'],
+  r32: ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium',
+        'United States','Spain','Portugal','Switzerland','Egypt','Argentina','Colombia'],
+  r16: ['Morocco','France','Norway'],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
