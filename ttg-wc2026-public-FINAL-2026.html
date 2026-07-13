@@ -542,9 +542,8 @@ function nav(name){
   if(name==='results')buildResults();
 }
 
-// ── SEEDED RESULTS as of July 9, 2026 ───────────────────────────────────────
-// R32 and R16 complete. QF: France/Morocco today (4pm ET), Belgium/Spain Jul 10,
-// Norway/England Jul 11 5pm, Argentina/Switzerland Jul 11 9pm
+// ── SEEDED RESULTS as of July 13, 2026 ──────────────────────────────────────
+// QF complete. SF: France/Spain Jul 14, England/Argentina Jul 15. Final Jul 19.
 const SEEDED_GROUP_RESULTS = {
   A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
   B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
@@ -559,12 +558,15 @@ const SEEDED_GROUP_RESULTS = {
   K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
   L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
 };
-// R32 +3pts | R16 +5pts | QF pending
+// R32 +3pts | R16 +5pts | QF +8pts | SF/Final pending
 const SEEDED_KO_RESULTS = {
   r32: ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium',
         'United States','Spain','Portugal','Switzerland','Egypt','Argentina','Colombia'],
   r16: ['Morocco','France','Norway','England','Spain','Belgium','Argentina','Switzerland'],
-  qf:  [],
+  qf:  ['France','Spain','England','Argentina'],
+  sf:  [],
+  fin: [],
+  champ: [],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
