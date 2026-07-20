@@ -883,8 +883,9 @@ if(state.players.length===0){
 }else{
   nextId=Math.max(...state.players.map(p=>p.id||0))+1;
 }
-// ── SEEDED RESULTS as of July 13, 2026 ──────────────────────────────────────
-// QF complete. SF: France/Spain Jul 14, England/Argentina Jul 15. Final Jul 19.
+// ── SEEDED RESULTS as of July 20, 2026 — TOURNAMENT COMPLETE ────────────────
+// 3rd place: England 6-4 France (Jul 18) | FINAL: Spain 1-0 Argentina aet (Jul 19)
+// SPAIN ARE WORLD CUP 2026 CHAMPIONS!
 const SEEDED_GROUP_RESULTS = {
   A: { first: 'Mexico',        second: 'South Africa', third: 'South Korea',   last: 'Czechia'        },
   B: { first: 'Switzerland',   second: 'Canada',       third: 'Bosnia & Herz.',last: 'Qatar'           },
@@ -899,15 +900,15 @@ const SEEDED_GROUP_RESULTS = {
   K: { first: 'Colombia',      second: 'Portugal',     third: 'DR Congo',      last: 'Uzbekistan'      },
   L: { first: 'England',       second: 'Croatia',      third: 'Ghana',         last: 'Panama'          },
 };
-// R32 +3pts | R16 +5pts | QF +8pts | SF/Final pending
+// COMPLETE — R32+3 | R16+5 | QF+8 | SF+12 | Final+15 | Champion+25
 const SEEDED_KO_RESULTS = {
-  r32: ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium',
-        'United States','Spain','Portugal','Switzerland','Egypt','Argentina','Colombia'],
-  r16: ['Morocco','France','Norway','England','Spain','Belgium','Argentina','Switzerland'],
-  qf:  ['France','Spain','England','Argentina'],
-  sf:  [],
-  fin: [],
-  champ: [],
+  r32:   ['Canada','Brazil','Paraguay','Morocco','Norway','France','Mexico','England','Belgium',
+          'United States','Spain','Portugal','Switzerland','Egypt','Argentina','Colombia'],
+  r16:   ['Morocco','France','Norway','England','Spain','Belgium','Argentina','Switzerland'],
+  qf:    ['France','Spain','England','Argentina'],
+  sf:    ['Spain','Argentina'],
+  fin:   ['Spain','Argentina'],
+  champ: ['Spain'],
 };
 if(!state.groupResults || Object.keys(state.groupResults).length === 0){
   state.groupResults = SEEDED_GROUP_RESULTS;
